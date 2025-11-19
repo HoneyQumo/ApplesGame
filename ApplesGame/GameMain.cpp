@@ -70,6 +70,7 @@ int main()
     sf::Clock gameClock;
     float lastTime = gameClock.getElapsedTime().asSeconds();
 
+    /* GAME LOOP */
     while (window.isOpen())
     {
         float currentTime = gameClock.getElapsedTime().asSeconds();
@@ -152,17 +153,28 @@ int main()
                 float hypotenuse = cathetusX + cathetusY;
                 if (hypotenuse <= SQUARE_RADIUS_SUM)
                 {
+                    /* Hide 'eaten' apple */
                     isAppleEaten[i] = true;
                     ++numEatenApples;
+
+                    /* Init new apple */
+                    isAppleEaten[i] = false;
+                    applesX[i] = floatRandom(0, SCREEN_WIDTH);
+                    applesY[i] = floatRandom(0, SCREEN_HEIGHT);
+                    applesShape[i].setRadius(APPLE_SIZE / 2.f);
+                    applesShape[i].setFillColor(sf::Color::Green);
+                    applesShape[i].setOrigin(APPLE_SIZE / 2.f, APPLE_SIZE / 2.f);
+                    applesShape[i].setPosition(applesX[i], applesY[i]);
                 }
             }
         }
 
-        if (numEatenApples == TOTAL_APPLES)
-        {
-            window.close();
-            break;
-        }
+        /* Endgame condition */
+        // if (numEatenApples == TOTAL_APPLES)
+        // {
+        //     window.close();
+        //     break;
+        // }
 
         window.clear();
         playerShape.setPosition(playerX, playerY);
