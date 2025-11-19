@@ -17,9 +17,100 @@ constexpr float APPLE_SIZE = 20.f;
 // constexpr float HALF_COLLIDERS_SUM = (PLAYER_SIZE + APPLE_SIZE) / 2.f;
 constexpr float SQUARE_RADIUS_SUM = (APPLE_SIZE + PLAYER_SIZE) * (APPLE_SIZE + PLAYER_SIZE) / 4.f;
 
-float floatRandom(const float a, const float b)
+float GetFloatInRange(const float a, const float b)
 {
     return a + rand() / static_cast<float>(RAND_MAX) * (b - a);
+}
+
+void InitApple(bool& isEaten, float& positionX, float& positionY, sf::CircleShape& appleShape)
+{
+    isEaten = false;
+
+    positionX = GetFloatInRange(0, SCREEN_WIDTH);
+    positionY = GetFloatInRange(0, SCREEN_HEIGHT);
+
+    appleShape.setRadius(APPLE_SIZE / 2.f);
+    appleShape.setFillColor(sf::Color::Green);
+    appleShape.setOrigin(APPLE_SIZE / 2.f, APPLE_SIZE / 2.f);
+    appleShape.setPosition(positionX, positionY);
+}
+
+void UpdatePlayerMovement(float& positionX, float& positionY, float& speed, const int& direction, const float& time)
+{
+    speed += ACCELERATION * time;
+
+    /* Update player state */
+    switch (direction)
+    {
+    case 0:
+        {
+            positionX += speed * time;
+            break;
+        }
+    case 1:
+        {
+            positionY -= speed * time;
+            break;
+        }
+    case 2:
+        {
+            positionX -= speed * time;
+            break;
+        }
+    case 3:
+        {
+            positionY += speed * time;
+            break;
+        }
+    }
+}
+
+bool HasPlayerCollisionWithWindowBorder(const float& playerX, const float& playerY)
+{
+    const bool hasTopCollision = playerY - PLAYER_SIZE / 2.f < 0.f;
+    const bool hasLeftCollision = playerX - PLAYER_SIZE / 2.f < 0.f;
+    const bool hasRightCollision = playerX + PLAYER_SIZE / 2.f > SCREEN_WIDTH;
+    const bool hasBottomCollision = playerY + PLAYER_SIZE / 2.f > SCREEN_HEIGHT;
+
+    return hasTopCollision || hasRightCollision || hasBottomCollision || hasLeftCollision;
+}
+
+bool HasPlayerCollisionWithApple(float& playerX, float& playerY, float& appleX, float& appleY)
+{
+    /* Check collisions for squares */
+    // float deltaX = fabs(playerX - applesX[i]);
+    // float deltaY = fabs(playerY - applesY[i]);
+    // if (deltaX <= HALF_COLLIDERS_SUM && deltaY <= HALF_COLLIDERS_SUM)
+    // {
+    //     isAppleEaten[i] = true;
+    //     ++numEatenApples;
+    // }
+
+    /* Check collisions for circles */
+    float cathetusX = static_cast<float>(pow(playerX - appleX, 2));
+    float cathetusY = static_cast<float>(pow(playerY - appleY, 2));
+    float hypotenuse = cathetusX + cathetusY;
+    return hypotenuse <= SQUARE_RADIUS_SUM;
+}
+
+void KeyboardHandler(int& playerDirection)
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    {
+        playerDirection = 0;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+    {
+        playerDirection = 1;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    {
+        playerDirection = 2;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    {
+        playerDirection = 3;
+    }
 }
 
 int main()
@@ -28,6 +119,7 @@ int main()
     srand(seed);
 
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Apples Game");
+
     float playerX = SCREEN_WIDTH / 2.f;
     float playerY = SCREEN_HEIGHT / 2.f;
     float playerSpeed = INITIAL_SPEED;
@@ -53,15 +145,7 @@ int main()
 
     for (int i = 0; i < TOTAL_APPLES; ++i)
     {
-        isAppleEaten[i] = false;
-
-        applesX[i] = floatRandom(0, SCREEN_WIDTH);
-        applesY[i] = floatRandom(0, SCREEN_HEIGHT);
-
-        applesShape[i].setRadius(APPLE_SIZE / 2.f);
-        applesShape[i].setFillColor(sf::Color::Green);
-        applesShape[i].setOrigin(APPLE_SIZE / 2.f, APPLE_SIZE / 2.f);
-        applesShape[i].setPosition(applesX[i], applesY[i]);
+        InitApple(isAppleEaten[i], applesX[i], applesY[i], applesShape[i]);
     }
 
     int numEatenApples = 0;
@@ -86,49 +170,11 @@ int main()
         }
 
         /* Set player direction */
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        {
-            playerDirection = 0;
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-        {
-            playerDirection = 1;
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        {
-            playerDirection = 2;
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-        {
-            playerDirection = 3;
-        }
+        KeyboardHandler(playerDirection);
 
-        playerSpeed += ACCELERATION * deltaTime;
+        UpdatePlayerMovement(playerX, playerY, playerSpeed, playerDirection, deltaTime);
 
-        /* Update player state */
-        if (playerDirection == 0)
-        {
-            playerX += playerSpeed * deltaTime;
-        }
-        else if (playerDirection == 1)
-        {
-            playerY -= playerSpeed * deltaTime;
-        }
-        else if (playerDirection == 2)
-        {
-            playerX -= playerSpeed * deltaTime;
-        }
-        else if (playerDirection == 3)
-        {
-            playerY += playerSpeed * deltaTime;
-        }
-
-        const bool hasTopCollision = playerY - PLAYER_SIZE / 2.f < 0.f;
-        const bool hasLeftCollision = playerX - PLAYER_SIZE / 2.f < 0.f;
-        const bool hasRightCollision = playerX + PLAYER_SIZE / 2.f > SCREEN_WIDTH;
-        const bool hasBottomCollision = playerY + PLAYER_SIZE / 2.f > SCREEN_HEIGHT;
-
-        if (hasTopCollision || hasRightCollision || hasBottomCollision || hasLeftCollision)
+        if (HasPlayerCollisionWithWindowBorder(playerX, playerY))
         {
             window.close();
             break;
@@ -138,33 +184,14 @@ int main()
         {
             if (!isAppleEaten[i])
             {
-                /* Check collisions for squares */
-                // float deltaX = fabs(playerX - applesX[i]);
-                // float deltaY = fabs(playerY - applesY[i]);
-                // if (deltaX <= HALF_COLLIDERS_SUM && deltaY <= HALF_COLLIDERS_SUM)
-                // {
-                //     isAppleEaten[i] = true;
-                //     ++numEatenApples;
-                // }
-
-                /* Check collisions for circles */
-                float cathetusX = static_cast<float>(pow(playerX - applesX[i], 2));
-                float cathetusY = static_cast<float>(pow(playerY - applesY[i], 2));
-                float hypotenuse = cathetusX + cathetusY;
-                if (hypotenuse <= SQUARE_RADIUS_SUM)
+                if (HasPlayerCollisionWithApple(playerX, playerY, applesX[i], applesY[i]))
                 {
                     /* Hide 'eaten' apple */
                     isAppleEaten[i] = true;
                     ++numEatenApples;
 
                     /* Init new apple */
-                    isAppleEaten[i] = false;
-                    applesX[i] = floatRandom(0, SCREEN_WIDTH);
-                    applesY[i] = floatRandom(0, SCREEN_HEIGHT);
-                    applesShape[i].setRadius(APPLE_SIZE / 2.f);
-                    applesShape[i].setFillColor(sf::Color::Green);
-                    applesShape[i].setOrigin(APPLE_SIZE / 2.f, APPLE_SIZE / 2.f);
-                    applesShape[i].setPosition(applesX[i], applesY[i]);
+                    InitApple(isAppleEaten[i], applesX[i], applesY[i], applesShape[i]);
                 }
             }
         }
