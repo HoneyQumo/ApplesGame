@@ -2,6 +2,7 @@
 // Authored by Aleksandr Rybalka (polterageist@gmail.com)
 
 #include <cmath>
+#include <thread>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -113,6 +114,31 @@ void KeyboardHandler(int& playerDirection)
     }
 }
 
+void ResetGame(
+    float& playerX, float& playerY,
+    float& playerSpeed, int& playerDirection, sf::RectangleShape& playerShape,
+    float* applesX, float* applesY,
+    bool* isApplesEaten, sf::CircleShape* applesShape, int& numEatenApples
+)
+{
+    playerX = SCREEN_WIDTH / 2.f;
+    playerY = SCREEN_HEIGHT / 2.f;
+    playerSpeed = INITIAL_SPEED;
+    playerDirection = 0;
+
+    playerShape.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
+    playerShape.setFillColor(sf::Color::Red);
+    playerShape.setOrigin(PLAYER_SIZE / 2.f, PLAYER_SIZE / 2.f);
+    playerShape.setPosition(playerX, playerY);
+
+    numEatenApples = 0;
+
+    for (int i = 0; i < TOTAL_APPLES; ++i)
+    {
+        InitApple(isApplesEaten[i], applesX[i], applesY[i], applesShape[i]);
+    }
+}
+
 int main()
 {
     int seed = static_cast<int>(time(nullptr));
@@ -140,12 +166,12 @@ int main()
     /* Init apples */
     float applesX[TOTAL_APPLES];
     float applesY[TOTAL_APPLES];
-    bool isAppleEaten[TOTAL_APPLES];
+    bool isApplesEaten[TOTAL_APPLES];
     sf::CircleShape applesShape[TOTAL_APPLES];
 
     for (int i = 0; i < TOTAL_APPLES; ++i)
     {
-        InitApple(isAppleEaten[i], applesX[i], applesY[i], applesShape[i]);
+        InitApple(isApplesEaten[i], applesX[i], applesY[i], applesShape[i]);
     }
 
     int numEatenApples = 0;
@@ -176,22 +202,29 @@ int main()
 
         if (HasPlayerCollisionWithWindowBorder(playerX, playerY))
         {
-            window.close();
-            break;
+            /* Break GAME LOOP */
+            // window.close();
+            // break;
+
+            /* Pause GAME LOOP */
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+
+            /* Reset game */
+            ResetGame(playerX, playerY, playerSpeed, playerDirection, playerShape, applesX, applesY, isApplesEaten, applesShape, numEatenApples);
         }
 
         for (int i = 0; i < TOTAL_APPLES; ++i)
         {
-            if (!isAppleEaten[i])
+            if (!isApplesEaten[i])
             {
                 if (HasPlayerCollisionWithApple(playerX, playerY, applesX[i], applesY[i]))
                 {
                     /* Hide 'eaten' apple */
-                    isAppleEaten[i] = true;
+                    isApplesEaten[i] = true;
                     ++numEatenApples;
 
                     /* Init new apple */
-                    InitApple(isAppleEaten[i], applesX[i], applesY[i], applesShape[i]);
+                    InitApple(isApplesEaten[i], applesX[i], applesY[i], applesShape[i]);
                 }
             }
         }
@@ -207,7 +240,7 @@ int main()
         playerShape.setPosition(playerX, playerY);
         for (int i = 0; i < TOTAL_APPLES; ++i)
         {
-            if (!isAppleEaten[i])
+            if (!isApplesEaten[i])
             {
                 window.draw(applesShape[i]);
             }
