@@ -76,7 +76,7 @@ bool HasPlayerCollisionWithWindowBorder(const float& playerX, const float& playe
     return hasTopCollision || hasRightCollision || hasBottomCollision || hasLeftCollision;
 }
 
-bool HasPlayerCollisionWithApple(float& playerX, float& playerY, float& appleX, float& appleY)
+bool HasPlayerCollisionWithApple(const float& playerX, const float& playerY, const float& appleX, const float& appleY)
 {
     /* Check collisions for squares */
     // float deltaX = fabs(playerX - applesX[i]);
