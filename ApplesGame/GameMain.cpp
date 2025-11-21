@@ -18,63 +18,98 @@ constexpr float APPLE_SIZE = 20.f;
 // constexpr float HALF_COLLIDERS_SUM = (PLAYER_SIZE + APPLE_SIZE) / 2.f;
 constexpr float SQUARE_RADIUS_SUM = (APPLE_SIZE + PLAYER_SIZE) * (APPLE_SIZE + PLAYER_SIZE) / 4.f;
 
+struct Vector2D
+{
+    float x = 0.f;
+    float y = 0.f;
+};
+
+using Position2D = Vector2D;
+
+enum class PlayerDirection
+{
+    Right = 0,
+    Up = 1,
+    Left = 2,
+    Down = 3
+};
+
+struct Player
+{
+    Position2D position;
+    float speed = 0.f;
+    PlayerDirection direction = PlayerDirection::Right;
+    sf::RectangleShape texture;
+};
+
+struct Apple
+{
+    Position2D position;
+    sf::CircleShape texture;
+};
+
+struct GameState
+{
+    Player player;
+    Apple apple[TOTAL_APPLES];
+    int numEatenApples = 0;
+};
+
 float GetFloatInRange(const float a, const float b)
 {
     return a + rand() / static_cast<float>(RAND_MAX) * (b - a);
 }
 
-void InitApple(float& positionX, float& positionY, sf::CircleShape& appleShape)
+void InitApple(Apple& apple)
 {
-    positionX = GetFloatInRange(0, SCREEN_WIDTH);
-    positionY = GetFloatInRange(0, SCREEN_HEIGHT);
+    apple.position.x = GetFloatInRange(0, SCREEN_WIDTH);
+    apple.position.y = GetFloatInRange(0, SCREEN_HEIGHT);
 
-    appleShape.setRadius(APPLE_SIZE / 2.f);
-    appleShape.setFillColor(sf::Color::Green);
-    appleShape.setOrigin(APPLE_SIZE / 2.f, APPLE_SIZE / 2.f);
-    appleShape.setPosition(positionX, positionY);
+    apple.texture.setRadius(APPLE_SIZE / 2.f);
+    apple.texture.setFillColor(sf::Color::Green);
+    apple.texture.setOrigin(APPLE_SIZE / 2.f, APPLE_SIZE / 2.f);
+    apple.texture.setPosition(apple.position.x, apple.position.y);
 }
 
-void UpdatePlayerMovement(float& positionX, float& positionY, float& speed, const int& direction, const float& time)
+void UpdatePlayerMovement(Player& player, const float& time)
 {
-    speed += ACCELERATION * time;
-
     /* Update player state */
-    switch (direction)
+    switch (player.direction)
     {
-    case 0:
+    case PlayerDirection::Right:
         {
-            positionX += speed * time;
+            player.position.x += player.speed * time;
             break;
         }
-    case 1:
+    case PlayerDirection::Up:
         {
-            positionY -= speed * time;
+            player.position.y -= player.speed * time;
             break;
         }
-    case 2:
+    case PlayerDirection::Left:
         {
-            positionX -= speed * time;
+            player.position.x -= player.speed * time;
             break;
         }
-    case 3:
+    case PlayerDirection::Down:
         {
-            positionY += speed * time;
+            player.position.y += player.speed * time;
             break;
         }
     }
 }
 
-bool HasPlayerCollisionWithWindowBorder(const float& playerX, const float& playerY)
+bool HasPlayerCollisionWithWindowBorder(const Position2D& position)
 {
-    const bool hasTopCollision = playerY - PLAYER_SIZE / 2.f < 0.f;
-    const bool hasLeftCollision = playerX - PLAYER_SIZE / 2.f < 0.f;
-    const bool hasRightCollision = playerX + PLAYER_SIZE / 2.f > SCREEN_WIDTH;
-    const bool hasBottomCollision = playerY + PLAYER_SIZE / 2.f > SCREEN_HEIGHT;
+    const bool hasTopCollision = position.y - PLAYER_SIZE / 2.f < 0.f;
+    const bool hasLeftCollision = position.x - PLAYER_SIZE / 2.f < 0.f;
+    const bool hasRightCollision = position.x + PLAYER_SIZE / 2.f > SCREEN_WIDTH;
+    const bool hasBottomCollision = position.y + PLAYER_SIZE / 2.f > SCREEN_HEIGHT;
 
     return hasTopCollision || hasRightCollision || hasBottomCollision || hasLeftCollision;
 }
 
-bool HasPlayerCollisionWithApple(const float& playerX, const float& playerY, const float& appleX, const float& appleY)
+bool HasPlayerCollisionWithApple(const Position2D& playerPosition, const Position2D& applePosition)
 {
     /* Check collisions for squares */
     // float deltaX = fabs(playerX - applesX[i]);
@@ -86,56 +121,52 @@ bool HasPlayerCollisionWithApple(const float& playerX, const float& playerY, con
     // }
 
     /* Check collisions for circles */
-    float cathetusX = static_cast<float>(pow(playerX - appleX, 2));
-    float cathetusY = static_cast<float>(pow(playerY - appleY, 2));
+    float cathetusX = static_cast<float>(pow(playerPosition.x - applePosition.x, 2));
+    float cathetusY = static_cast<float>(pow(playerPosition.y - applePosition.y, 2));
     float hypotenuse = cathetusX + cathetusY;
     return hypotenuse <= SQUARE_RADIUS_SUM;
 }
 
-void KeyboardHandler(int& playerDirection)
+void KeyboardHandler(PlayerDirection& playerDirection)
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
-        playerDirection = 0;
+        playerDirection = PlayerDirection::Right;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
-        playerDirection = 1;
+        playerDirection = PlayerDirection::Up;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
-        playerDirection = 2;
+        playerDirection = PlayerDirection::Left;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
-        playerDirection = 3;
+        playerDirection = PlayerDirection::Down;
     }
 }
 
-void ResetGame(
-    float& playerX, float& playerY,
-    float& playerSpeed, int& playerDirection, sf::RectangleShape& playerShape,
-    float* applesX, float* applesY,
-    sf::CircleShape* applesShape, int& numEatenApples
-)
+void InitGame(GameState& state)
 {
-    playerX = SCREEN_WIDTH / 2.f;
-    playerY = SCREEN_HEIGHT / 2.f;
-    playerSpeed = INITIAL_SPEED;
-    playerDirection = 0;
+    state.player.position.x = SCREEN_WIDTH / 2.f;
+    state.player.position.y = SCREEN_HEIGHT / 2.f;
+    state.player.speed = INITIAL_SPEED;
+    state.player.direction = PlayerDirection::Right;
 
-    playerShape.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
-    playerShape.setFillColor(sf::Color::Red);
-    playerShape.setOrigin(PLAYER_SIZE / 2.f, PLAYER_SIZE / 2.f);
-    playerShape.setPosition(playerX, playerY);
+    state.player.texture.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
+    state.player.texture.setFillColor(sf::Color::Red);
+    state.player.texture.setOrigin(PLAYER_SIZE / 2.f, PLAYER_SIZE / 2.f);
+    state.player.texture.setPosition(state.player.position.x, state.player.position.y);
 
-    numEatenApples = 0;
+    state.numEatenApples = 0;
 
     for (int i = 0; i < TOTAL_APPLES; ++i)
     {
-        InitApple(applesX[i], applesY[i], applesShape[i]);
+        InitApple(state.apple[i]);
     }
 }
+
 
 int main()
 {
@@ -144,34 +175,9 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Apples Game");
 
-    float playerX = SCREEN_WIDTH / 2.f;
-    float playerY = SCREEN_HEIGHT / 2.f;
-    float playerSpeed = INITIAL_SPEED;
-    /*
-     * 0 - right 
-     * 1 - up
-     * 2 - left
-     * 3 - down
-     */
-    int playerDirection = 0;
-
-    sf::RectangleShape playerShape;
-    playerShape.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
-    playerShape.setFillColor(sf::Color::Red);
-    playerShape.setOrigin(PLAYER_SIZE / 2.f, PLAYER_SIZE / 2.f);
-    playerShape.setPosition(playerX, playerY);
-
-    /* Init apples */
-    float applesX[TOTAL_APPLES];
-    float applesY[TOTAL_APPLES];
-    sf::CircleShape applesShape[TOTAL_APPLES];
-
-    for (int i = 0; i < TOTAL_APPLES; ++i)
-    {
-        InitApple(applesX[i], applesY[i], applesShape[i]);
-    }
-
-    int numEatenApples = 0;
+    /* Init game */
+    GameState gameState;
+    InitGame(gameState);
 
     /* Init game clocks */
     sf::Clock gameClock;
@@ -189,53 +195,53 @@ int main()
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
+            {
                 window.close();
+                break;
+            }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+            {
+                window.close();
+                break;
+            }
         }
 
         /* Set player direction */
-        KeyboardHandler(playerDirection);
+        KeyboardHandler(gameState.player.direction);
 
-        UpdatePlayerMovement(playerX, playerY, playerSpeed, playerDirection, deltaTime);
+        UpdatePlayerMovement(gameState.player, deltaTime);
 
-        if (HasPlayerCollisionWithWindowBorder(playerX, playerY))
+        if (HasPlayerCollisionWithWindowBorder(gameState.player.position))
         {
-            /* Break GAME LOOP */
-            // window.close();
-            // break;
-
             /* Pause GAME LOOP */
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
             /* Reset game */
-            ResetGame(playerX, playerY, playerSpeed, playerDirection, playerShape, applesX, applesY, applesShape, numEatenApples);
+            InitGame(gameState);
         }
 
         for (int i = 0; i < TOTAL_APPLES; ++i)
         {
-            if (HasPlayerCollisionWithApple(playerX, playerY, applesX[i], applesY[i]))
+            if (HasPlayerCollisionWithApple(gameState.player.position, gameState.apple[i].position))
             {
                 /* Count eated apples */
-                ++numEatenApples;
+                ++gameState.numEatenApples;
 
                 /* Init new apple */
-                InitApple(applesX[i], applesY[i], applesShape[i]);
+                InitApple(gameState.apple[i]);
+
+                gameState.player.speed += ACCELERATION;
             }
         }
 
-        /* Endgame condition */
-        // if (numEatenApples == TOTAL_APPLES)
-        // {
-        //     window.close();
-        //     break;
-        // }
-
         window.clear();
-        playerShape.setPosition(playerX, playerY);
+        gameState.player.texture.setPosition(gameState.player.position.x, gameState.player.position.y);
         for (int i = 0; i < TOTAL_APPLES; ++i)
         {
-            window.draw(applesShape[i]);
+            window.draw(gameState.apple[i].texture);
         }
-        window.draw(playerShape);
+        window.draw(gameState.player.texture);
         window.display();
     }
 
