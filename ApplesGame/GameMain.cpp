@@ -147,26 +147,72 @@ void KeyboardHandler(PlayerDirection& playerDirection)
     }
 }
 
-void InitGame(GameState& state)
+
+void InitGame(GameState& gameState)
 {
-    state.player.position.x = SCREEN_WIDTH / 2.f;
-    state.player.position.y = SCREEN_HEIGHT / 2.f;
-    state.player.speed = INITIAL_SPEED;
-    state.player.direction = PlayerDirection::Right;
+    gameState.player.position.x = SCREEN_WIDTH / 2.f;
+    gameState.player.position.y = SCREEN_HEIGHT / 2.f;
+    gameState.player.speed = INITIAL_SPEED;
+    gameState.player.direction = PlayerDirection::Right;
 
-    state.player.texture.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
-    state.player.texture.setFillColor(sf::Color::Red);
-    state.player.texture.setOrigin(PLAYER_SIZE / 2.f, PLAYER_SIZE / 2.f);
-    state.player.texture.setPosition(state.player.position.x, state.player.position.y);
+    gameState.player.texture.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
+    gameState.player.texture.setFillColor(sf::Color::Red);
+    gameState.player.texture.setOrigin(PLAYER_SIZE / 2.f, PLAYER_SIZE / 2.f);
+    gameState.player.texture.setPosition(gameState.player.position.x, gameState.player.position.y);
 
-    state.numEatenApples = 0;
+    gameState.numEatenApples = 0;
 
     for (int i = 0; i < TOTAL_APPLES; ++i)
     {
-        InitApple(state.apple[i]);
+        InitApple(gameState.apple[i]);
     }
 }
 
+void UpdateGame(GameState& gameState, const float& time)
+{
+    /* Set player direction */
+    KeyboardHandler(gameState.player.direction);
+
+    UpdatePlayerMovement(gameState.player, time);
+
+    if (HasPlayerCollisionWithWindowBorder(gameState.player.position))
+    {
+        /* Pause GAME LOOP */
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        /* Reset game */
+        InitGame(gameState);
+    }
+
+    for (int i = 0; i < TOTAL_APPLES; ++i)
+    {
+        if (HasPlayerCollisionWithApple(gameState.player.position, gameState.apple[i].position))
+        {
+            /* Count eated apples */
+            ++gameState.numEatenApples;
+
+            /* Init new apple */
+            InitApple(gameState.apple[i]);
+
+            gameState.player.speed += ACCELERATION;
+        }
+    }
+}
+
+void DrawGame(sf::RenderWindow& window, GameState& gameState)
+{
+    window.clear();
+
+
+    gameState.player.texture.setPosition(gameState.player.position.x, gameState.player.position.y);
+    for (int i = 0; i < TOTAL_APPLES; ++i)
+    {
+        window.draw(gameState.apple[i].texture);
+    }
+    window.draw(gameState.player.texture);
+
+    window.display();
+}
 
 int main()
 {
@@ -207,42 +253,9 @@ int main()
             }
         }
 
-        /* Set player direction */
-        KeyboardHandler(gameState.player.direction);
+        UpdateGame(gameState, deltaTime);
 
-        UpdatePlayerMovement(gameState.player, deltaTime);
-
-        if (HasPlayerCollisionWithWindowBorder(gameState.player.position))
-        {
-            /* Pause GAME LOOP */
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-
-            /* Reset game */
-            InitGame(gameState);
-        }
-
-        for (int i = 0; i < TOTAL_APPLES; ++i)
-        {
-            if (HasPlayerCollisionWithApple(gameState.player.position, gameState.apple[i].position))
-            {
-                /* Count eated apples */
-                ++gameState.numEatenApples;
-
-                /* Init new apple */
-                InitApple(gameState.apple[i]);
-
-                gameState.player.speed += ACCELERATION;
-            }
-        }
-
-        window.clear();
-        gameState.player.texture.setPosition(gameState.player.position.x, gameState.player.position.y);
-        for (int i = 0; i < TOTAL_APPLES; ++i)
-        {
-            window.draw(gameState.apple[i].texture);
-        }
-        window.draw(gameState.player.texture);
-        window.display();
+        DrawGame(window, gameState);
     }
 
     return 0;
