@@ -66,6 +66,19 @@ Position2D getRandomPositionInScreen()
     };
 }
 
+void InitPlayer(Player& player)
+{
+    player.position.x = SCREEN_WIDTH / 2.f;
+    player.position.y = SCREEN_HEIGHT / 2.f;
+    player.speed = INITIAL_SPEED;
+    player.direction = PlayerDirection::Right;
+
+    player.texture.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
+    player.texture.setFillColor(sf::Color::Red);
+    player.texture.setOrigin(PLAYER_SIZE / 2.f, PLAYER_SIZE / 2.f);
+    player.texture.setPosition(player.position.x, player.position.y);
+}
+
 void InitApple(Apple& apple)
 {
     apple.position = getRandomPositionInScreen();
@@ -166,15 +179,7 @@ void KeyboardHandler(PlayerDirection& playerDirection)
 
 void InitGame(GameState& gameState)
 {
-    gameState.player.position.x = SCREEN_WIDTH / 2.f;
-    gameState.player.position.y = SCREEN_HEIGHT / 2.f;
-    gameState.player.speed = INITIAL_SPEED;
-    gameState.player.direction = PlayerDirection::Right;
-
-    gameState.player.texture.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
-    gameState.player.texture.setFillColor(sf::Color::Red);
-    gameState.player.texture.setOrigin(PLAYER_SIZE / 2.f, PLAYER_SIZE / 2.f);
-    gameState.player.texture.setPosition(gameState.player.position.x, gameState.player.position.y);
+    InitPlayer(gameState.player);
 
     gameState.numEatenApples = 0;
 
