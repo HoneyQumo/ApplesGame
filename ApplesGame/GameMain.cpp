@@ -220,17 +220,12 @@ void UpdateGame(GameState& gameState, const float& time)
 
 void DrawGame(sf::RenderWindow& window, GameState& gameState)
 {
-    window.clear();
-
-
     gameState.player.texture.setPosition(gameState.player.position.x, gameState.player.position.y);
     for (int i = 0; i < TOTAL_APPLES; ++i)
     {
         window.draw(gameState.apple[i].texture);
     }
     window.draw(gameState.player.texture);
-
-    window.display();
 }
 
 int main()
@@ -274,7 +269,9 @@ int main()
 
         UpdateGame(gameState, deltaTime);
 
+        window.clear();
         DrawGame(window, gameState);
+        window.display();
     }
 
     return 0;
