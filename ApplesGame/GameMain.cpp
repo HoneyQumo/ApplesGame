@@ -15,8 +15,6 @@ constexpr float PLAYER_SIZE = 20.f;
 constexpr float ACCELERATION = 20.f;
 constexpr int TOTAL_APPLES = 20;
 constexpr float APPLE_SIZE = 20.f;
-// constexpr float HALF_COLLIDERS_SUM = (PLAYER_SIZE + APPLE_SIZE) / 2.f;
-constexpr float SQUARE_RADIUS_SUM = (APPLE_SIZE + PLAYER_SIZE) * (APPLE_SIZE + PLAYER_SIZE) / 4.f;
 
 struct Vector2D
 {
@@ -60,11 +58,17 @@ float GetFloatInRange(const float a, const float b)
     return a + rand() / static_cast<float>(RAND_MAX) * (b - a);
 }
 
+Position2D getRandomPositionInScreen()
+{
+    return Position2D{
+        GetFloatInRange(0, SCREEN_WIDTH),
+        GetFloatInRange(0, SCREEN_HEIGHT)
+    };
+}
+
 void InitApple(Apple& apple)
 {
-    apple.position.x = GetFloatInRange(0, SCREEN_WIDTH);
-    apple.position.y = GetFloatInRange(0, SCREEN_HEIGHT);
-
+    apple.position = getRandomPositionInScreen();
     apple.texture.setRadius(APPLE_SIZE / 2.f);
     apple.texture.setFillColor(sf::Color::Green);
     apple.texture.setOrigin(APPLE_SIZE / 2.f, APPLE_SIZE / 2.f);
@@ -109,22 +113,34 @@ bool HasPlayerCollisionWithWindowBorder(const Position2D& position)
     return hasTopCollision || hasRightCollision || hasBottomCollision || hasLeftCollision;
 }
 
-bool HasPlayerCollisionWithApple(const Position2D& playerPosition, const Position2D& applePosition)
+/* Check collisions for squares */
+// Example:  if (isRectangleCollide(playerPosition, { PLAYER_SIZE, PLAYER_SIZE }, applePosition, { APPLE_SIZE, APPLE_SIZE }))
+bool isRectangleCollide(
+    const Position2D& position1, const Vector2D& size1,
+    const Position2D& position2, const Vector2D& size2
+)
 {
-    /* Check collisions for squares */
-    // float deltaX = fabs(playerX - applesX[i]);
-    // float deltaY = fabs(playerY - applesY[i]);
-    // if (deltaX <= HALF_COLLIDERS_SUM && deltaY <= HALF_COLLIDERS_SUM)
-    // {
-    //     isAppleEaten[i] = true;
-    //     ++numEatenApples;
-    // }
+    float halfColliderSumX = (size1.x + size2.x) / 2.f;
+    float halfColliderSumY = (size1.y + size2.y) / 2.f;
 
-    /* Check collisions for circles */
-    float cathetusX = static_cast<float>(pow(playerPosition.x - applePosition.x, 2));
-    float cathetusY = static_cast<float>(pow(playerPosition.y - applePosition.y, 2));
+    float deltaX = fabs(position1.x - position2.x);
+    float deltaY = fabs(position1.y - position2.y);
+
+    return deltaX <= halfColliderSumX && deltaY <= halfColliderSumY;
+}
+
+bool isCircleCollide(
+    const Position2D& position1, const float& radius1,
+    const Position2D& position2, const float& radius2
+)
+{
+    float cathetusX = static_cast<float>(pow(position1.x - position2.x, 2));
+    float cathetusY = static_cast<float>(pow(position1.y - position2.y, 2));
     float hypotenuse = cathetusX + cathetusY;
-    return hypotenuse <= SQUARE_RADIUS_SUM;
+
+    float squareRadiusSum = (radius1 + radius2) * (radius1 + radius2);
+
+    return hypotenuse <= squareRadiusSum;
 }
 
 void KeyboardHandler(PlayerDirection& playerDirection)
@@ -186,7 +202,10 @@ void UpdateGame(GameState& gameState, const float& time)
 
     for (int i = 0; i < TOTAL_APPLES; ++i)
     {
-        if (HasPlayerCollisionWithApple(gameState.player.position, gameState.apple[i].position))
+        if (isCircleCollide(
+                gameState.player.position, PLAYER_SIZE / 2.f,
+                gameState.apple[i].position, APPLE_SIZE / 2.f)
+        )
         {
             /* Count eated apples */
             ++gameState.numEatenApples;
