@@ -3,24 +3,27 @@
 #include "Constants.h"
 #include "Math.h"
 
-enum class PlayerDirection
+namespace ApplesGame
 {
-    Right = 0,
-    Up = 1,
-    Left = 2,
-    Down = 3
-};
+    enum class PlayerDirection
+    {
+        Right = 0,
+        Up = 1,
+        Left = 2,
+        Down = 3
+    };
 
-struct Player
-{
-    Position2D position;
-    float speed = INITIAL_SPEED;
-    PlayerDirection direction = PlayerDirection::Right;
-    sf::RectangleShape texture;
-};
+    struct Player
+    {
+        Position2D position;
+        float speed = INITIAL_SPEED;
+        PlayerDirection direction = PlayerDirection::Right;
+        sf::RectangleShape texture;
+    };
 
-void InitPlayer(Player& player);
+    void InitPlayer(Player& player);
 
-bool HasPlayerCollisionWithWindowBorder(const Position2D& position);
+    bool HasPlayerCollisionWithWindowBorder(const Position2D& position);
 
-void UpdatePlayerMovement(Player& player, const float& time);
+    void UpdatePlayerMovement(Player& player, const float& time);
+}

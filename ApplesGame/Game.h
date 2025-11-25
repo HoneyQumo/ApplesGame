@@ -4,17 +4,20 @@
 #include "Player.h"
 #include "Apple.h"
 
-struct Game
+namespace ApplesGame
 {
-    Player player;
-    Apple apple[TOTAL_APPLES];
-    int numEatenApples = 0;
-};
+    struct Game
+    {
+        Player player;
+        Apple apple[TOTAL_APPLES];
+        int numEatenApples = 0;
+    };
 
-void InitGame(Game& game);
+    void InitGame(Game& game);
 
-void UpdateGame(Game& game, const float& time);
+    void UpdateGame(Game& game, const float& time);
 
-void DrawGame(sf::RenderWindow& window, Game& game);
+    void DrawGame(sf::RenderWindow& window, Game& game);
 
-void KeyboardHandler(PlayerDirection& playerDirection);
+    void KeyboardHandler(PlayerDirection& playerDirection);
+}

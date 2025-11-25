@@ -5,6 +5,8 @@
 
 int main()
 {
+    using namespace ApplesGame;
+
     int seed = static_cast<int>(time(nullptr));
     srand(seed);
 
