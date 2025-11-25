@@ -2,17 +2,16 @@
 
 namespace ApplesGame
 {
-    void InitPlayer(Player& player)
+    void InitPlayer(Player& player, const sf::Texture& texture)
     {
         player.position.x = SCREEN_WIDTH / 2.f;
         player.position.y = SCREEN_HEIGHT / 2.f;
         player.speed = INITIAL_SPEED;
         player.direction = PlayerDirection::Right;
 
-        player.texture.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
-        player.texture.setFillColor(sf::Color::Red);
-        player.texture.setOrigin(PLAYER_SIZE / 2.f, PLAYER_SIZE / 2.f);
-        player.texture.setPosition(player.position.x, player.position.y);
+        player.sprite.setTexture(texture);
+        SetSpriteSize(player.sprite, PLAYER_SIZE, PLAYER_SIZE);
+        SetSpriteOrigin(player.sprite, 0.5f, 0.5f);
     }
 
     bool HasPlayerCollisionWithWindowBorder(const Position2D& position)
@@ -51,5 +50,11 @@ namespace ApplesGame
                 break;
             }
         }
+    }
+
+    void DrawPlayer(Player& player, sf::RenderWindow& window)
+    {
+        player.sprite.setPosition(player.position.x, player.position.y);
+        window.draw(player.sprite);
     }
 }

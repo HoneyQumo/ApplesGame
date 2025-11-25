@@ -7,7 +7,7 @@ namespace ApplesGame
         return a + rand() / static_cast<float>(RAND_MAX) * (b - a);
     }
 
-    Position2D getRandomPositionInScreen(const float screenWidth, const float screenHeight)
+    Position2D GetRandomPositionInScreen(const float screenWidth, const float screenHeight)
     {
         return Position2D{
             GetFloatInRange(0, screenWidth),
@@ -15,7 +15,7 @@ namespace ApplesGame
         };
     }
 
-    bool isRectangleCollide(const Position2D& position1, const Vector2D& size1, const Position2D& position2, const Vector2D& size2)
+    bool IsRectangleCollide(const Position2D& position1, const Vector2D& size1, const Position2D& position2, const Vector2D& size2)
     {
         const float halfColliderSumX = (size1.x + size2.x) / 2.f;
         const float halfColliderSumY = (size1.y + size2.y) / 2.f;
@@ -26,7 +26,7 @@ namespace ApplesGame
         return deltaX <= halfColliderSumX && deltaY <= halfColliderSumY;
     }
 
-    bool isCircleCollide(const Position2D& position1, const float& radius1, const Position2D& position2, const float& radius2)
+    bool IsCircleCollide(const Position2D& position1, const float& radius1, const Position2D& position2, const float& radius2)
     {
         const float cathetusX = static_cast<float>(pow(position1.x - position2.x, 2));
         const float cathetusY = static_cast<float>(pow(position1.y - position2.y, 2));
@@ -35,5 +35,18 @@ namespace ApplesGame
         float squareRadiusSum = (radius1 + radius2) * (radius1 + radius2);
 
         return hypotenuse <= squareRadiusSum;
+    }
+
+    void SetSpriteSize(sf::Sprite& sprite, const float desiredWidth, const float desiredHeight)
+    {
+        const sf::FloatRect spriteRect = sprite.getLocalBounds();
+        const sf::Vector2f scale = {desiredWidth / spriteRect.width, desiredHeight / spriteRect.height};
+        sprite.setScale(scale);
+    }
+
+    void SetSpriteOrigin(sf::Sprite& sprite, const float originX, const float originY)
+    {
+        const sf::FloatRect spriteRect = sprite.getLocalBounds();
+        sprite.setOrigin(originX * spriteRect.width, originY * spriteRect.height);
     }
 }

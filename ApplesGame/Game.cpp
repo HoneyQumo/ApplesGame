@@ -1,16 +1,20 @@
 ﻿#include "Game.h"
+#include <cassert>
 
 namespace ApplesGame
 {
     void InitGame(Game& game)
     {
-        InitPlayer(game.player);
+        assert(game.playerTexture.loadFromFile(RESOURCES_PATH + "\\Player.png"));
+        assert(game.appleTexture.loadFromFile(RESOURCES_PATH + "\\Apple.png"));
+
+        InitPlayer(game.player, game.playerTexture);
 
         game.numEatenApples = 0;
 
         for (int i = 0; i < TOTAL_APPLES; ++i)
         {
-            InitApple(game.apple[i]);
+            InitApple(game.apples[i], game.appleTexture);
         }
     }
 
@@ -32,16 +36,16 @@ namespace ApplesGame
 
         for (int i = 0; i < TOTAL_APPLES; ++i)
         {
-            if (isCircleCollide(
+            if (IsCircleCollide(
                     game.player.position, PLAYER_SIZE / 2.f,
-                    game.apple[i].position, APPLE_SIZE / 2.f)
+                    game.apples[i].position, APPLE_SIZE / 2.f)
             )
             {
                 /* Count eated apples */
                 ++game.numEatenApples;
 
                 /* Init new apple */
-                InitApple(game.apple[i]);
+                InitApple(game.apples[i], game.appleTexture);
 
                 game.player.speed += ACCELERATION;
             }
@@ -50,12 +54,12 @@ namespace ApplesGame
 
     void DrawGame(sf::RenderWindow& window, Game& game)
     {
-        game.player.texture.setPosition(game.player.position.x, game.player.position.y);
-        for (int i = 0; i < TOTAL_APPLES; ++i)
+        DrawPlayer(game.player, window);
+
+        for (Apple& apple : game.apples)
         {
-            window.draw(game.apple[i].texture);
+            DrawApple(apple, window);
         }
-        window.draw(game.player.texture);
     }
 
     void KeyboardHandler(PlayerDirection& playerDirection)

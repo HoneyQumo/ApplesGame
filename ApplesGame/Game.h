@@ -9,8 +9,11 @@ namespace ApplesGame
     struct Game
     {
         Player player;
-        Apple apple[TOTAL_APPLES];
+        Apple apples[TOTAL_APPLES];
         int numEatenApples = 0;
+
+        sf::Texture playerTexture;
+        sf::Texture appleTexture;
     };
 
     void InitGame(Game& game);

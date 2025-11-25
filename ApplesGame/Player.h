@@ -18,12 +18,14 @@ namespace ApplesGame
         Position2D position;
         float speed = INITIAL_SPEED;
         PlayerDirection direction = PlayerDirection::Right;
-        sf::RectangleShape texture;
+        sf::Sprite sprite;
     };
 
-    void InitPlayer(Player& player);
+    void InitPlayer(Player& player, const sf::Texture& texture);
 
     bool HasPlayerCollisionWithWindowBorder(const Position2D& position);
 
     void UpdatePlayerMovement(Player& player, const float& time);
+
+    void DrawPlayer(Player& player, sf::RenderWindow& window);
 }
