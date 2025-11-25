@@ -12,9 +12,9 @@ namespace ApplesGame
 
         game.numEatenApples = 0;
 
-        for (int i = 0; i < TOTAL_APPLES; ++i)
+        for (Apple& apple : game.apples)
         {
-            InitApple(game.apples[i], game.appleTexture);
+            InitApple(apple, game.appleTexture);
         }
     }
 
