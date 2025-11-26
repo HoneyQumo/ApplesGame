@@ -7,47 +7,58 @@ namespace ApplesGame
     {
         assert(game.playerTexture.loadFromFile(RESOURCES_PATH + "\\Player.png"));
         assert(game.appleTexture.loadFromFile(RESOURCES_PATH + "\\Apple.png"));
+        assert(game.rockTexture.loadFromFile(RESOURCES_PATH + "\\Rock.png"));
 
-        InitPlayer(game.player, game.playerTexture);
-
-        game.numEatenApples = 0;
-
-        for (Apple& apple : game.apples)
-        {
-            InitApple(apple, game.appleTexture);
-        }
+        RestartGame(game);
     }
 
     void UpdateGame(Game& game, const float& time)
     {
-        /* Set player direction */
-        KeyboardHandler(game.player.direction);
-
-        UpdatePlayerMovement(game.player, time);
-
-        if (HasPlayerCollisionWithWindowBorder(game.player.position))
+        if (game.isGameOver)
         {
             /* Pause GAME LOOP */
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
-            /* Reset game */
-            InitGame(game);
+            RestartGame(game);
         }
-
-        for (int i = 0; i < TOTAL_APPLES; ++i)
+        else
         {
-            if (IsCircleCollide(
-                    game.player.position, PLAYER_SIZE / 2.f,
-                    game.apples[i].position, APPLE_SIZE / 2.f)
-            )
+            /* Set player direction */
+            KeyboardHandler(game.player.direction);
+
+            UpdatePlayerMovement(game.player, time);
+
+            if (HasPlayerCollisionWithWindowBorder(game.player.position))
             {
-                /* Count eated apples */
-                ++game.numEatenApples;
+                game.isGameOver = true;
+            }
 
-                /* Init new apple */
-                InitApple(game.apples[i], game.appleTexture);
+            for (Apple& apple : game.apples)
+            {
+                if (IsCircleCollide(
+                        game.player.position, PLAYER_SIZE / 2.f,
+                        apple.position, APPLE_SIZE / 2.f)
+                )
+                {
+                    /* Count eated apples */
+                    ++game.numEatenApples;
 
-                game.player.speed += PLAYER_ACCELERATION;
+                    /* Init new apple */
+                    InitApple(apple, game.appleTexture);
+
+                    game.player.speed += PLAYER_ACCELERATION;
+                }
+            }
+
+            for (Rock& rock : game.rocks)
+            {
+                if (IsRectangleCollide(
+                        game.player.position, {PLAYER_SIZE, PLAYER_SIZE},
+                        rock.position, {ROCK_SIZE, ROCK_SIZE})
+                )
+                {
+                    game.isGameOver = true;
+                }
             }
         }
     }
@@ -59,6 +70,12 @@ namespace ApplesGame
         for (Apple& apple : game.apples)
         {
             DrawApple(apple, window);
+        }
+
+
+        for (Rock& rock : game.rocks)
+        {
+            DrawRock(rock, window);
         }
     }
 
@@ -79,6 +96,24 @@ namespace ApplesGame
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         {
             playerDirection = PlayerDirection::Down;
+        }
+    }
+
+    void RestartGame(Game& game)
+    {
+        game.isGameOver = false;
+        game.numEatenApples = 0;
+
+        InitPlayer(game.player, game.playerTexture);
+
+        for (Apple& apple : game.apples)
+        {
+            InitApple(apple, game.appleTexture);
+        }
+
+        for (Rock& rock : game.rocks)
+        {
+            InitRock(rock, game.rockTexture);
         }
     }
 }

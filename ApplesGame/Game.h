@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include "Player.h"
 #include "Apple.h"
+#include "Rock.h"
 
 namespace ApplesGame
 {
@@ -10,10 +11,13 @@ namespace ApplesGame
     {
         Player player;
         Apple apples[TOTAL_APPLES];
+        Rock rocks[TOTAL_ROCKS];
         int numEatenApples = 0;
+        bool isGameOver = false;
 
         sf::Texture playerTexture;
         sf::Texture appleTexture;
+        sf::Texture rockTexture;
     };
 
     void InitGame(Game& game);
@@ -23,4 +27,6 @@ namespace ApplesGame
     void DrawGame(sf::RenderWindow& window, Game& game);
 
     void KeyboardHandler(PlayerDirection& playerDirection);
+
+    void RestartGame(Game& game);
 }
