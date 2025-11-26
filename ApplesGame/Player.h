@@ -27,5 +27,7 @@ namespace ApplesGame
 
     void UpdatePlayerMovement(Player& player, const float& time);
 
+    void UpdateFaceRotation(Player& player);
+
     void DrawPlayer(Player& player, sf::RenderWindow& window);
 }

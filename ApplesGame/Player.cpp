@@ -26,7 +26,6 @@ namespace ApplesGame
 
     void UpdatePlayerMovement(Player& player, const float& time)
     {
-        /* Update player state */
         switch (player.direction)
         {
         case PlayerDirection::Right:
@@ -52,9 +51,45 @@ namespace ApplesGame
         }
     }
 
+    void UpdateFaceRotation(Player& player)
+    {
+        // const sf::Vector2f spriteScale = player.sprite.getScale();
+        const sf::Vector2f spriteScale = GetSpriteSize(player.sprite, {PLAYER_SIZE, PLAYER_SIZE});
+
+        switch (player.direction)
+        {
+        case PlayerDirection::Right:
+            {
+                player.sprite.setScale(spriteScale.x, spriteScale.y);
+                player.sprite.setRotation(0.f);
+                break;
+            }
+        case PlayerDirection::Up:
+            {
+                player.sprite.setScale(spriteScale.x, spriteScale.y);
+                player.sprite.setRotation(-90.f);
+                break;
+            }
+        case PlayerDirection::Left:
+            {
+                player.sprite.setScale(-spriteScale.x, spriteScale.y);
+                player.sprite.setRotation(0.f);
+                break;
+            }
+        case PlayerDirection::Down:
+            {
+                player.sprite.setScale(spriteScale.x, spriteScale.y);
+                player.sprite.setRotation(90.f);
+                break;
+            }
+        }
+    }
+
     void DrawPlayer(Player& player, sf::RenderWindow& window)
     {
         player.sprite.setPosition(player.position.x, player.position.y);
         window.draw(player.sprite);
+
+        UpdateFaceRotation(player);
     }
 }

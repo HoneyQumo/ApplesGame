@@ -3,6 +3,24 @@
 
 namespace ApplesGame
 {
+    void RestartGame(Game& game)
+    {
+        game.isGameOver = false;
+        game.numEatenApples = 0;
+
+        InitPlayer(game.player, game.playerTexture);
+
+        for (Apple& apple : game.apples)
+        {
+            InitApple(apple, game.appleTexture);
+        }
+
+        for (Rock& rock : game.rocks)
+        {
+            InitRock(rock, game.rockTexture);
+        }
+    }
+
     void InitGame(Game& game)
     {
         assert(game.playerTexture.loadFromFile(RESOURCES_PATH + "\\Player.png"));
@@ -96,24 +114,6 @@ namespace ApplesGame
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         {
             playerDirection = PlayerDirection::Down;
-        }
-    }
-
-    void RestartGame(Game& game)
-    {
-        game.isGameOver = false;
-        game.numEatenApples = 0;
-
-        InitPlayer(game.player, game.playerTexture);
-
-        for (Apple& apple : game.apples)
-        {
-            InitApple(apple, game.appleTexture);
-        }
-
-        for (Rock& rock : game.rocks)
-        {
-            InitRock(rock, game.rockTexture);
         }
     }
 }

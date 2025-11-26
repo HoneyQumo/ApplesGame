@@ -33,5 +33,7 @@ namespace ApplesGame
 
     void SetSpriteSize(sf::Sprite& sprite, float desiredWidth, float desiredHeight);
 
+    sf::Vector2f GetSpriteSize(const sf::Sprite& sprite, const Vector2D& desiredSize);
+
     void SetSpriteOrigin(sf::Sprite& sprite, float originX, float originY);
 }

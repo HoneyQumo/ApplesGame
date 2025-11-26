@@ -20,6 +20,8 @@ namespace ApplesGame
         sf::Texture rockTexture;
     };
 
+    void RestartGame(Game& game);
+
     void InitGame(Game& game);
 
     void UpdateGame(Game& game, const float& time);
@@ -27,6 +29,4 @@ namespace ApplesGame
     void DrawGame(sf::RenderWindow& window, Game& game);
 
     void KeyboardHandler(PlayerDirection& playerDirection);
-
-    void RestartGame(Game& game);
 }

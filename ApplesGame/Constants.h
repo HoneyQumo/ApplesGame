@@ -15,6 +15,6 @@ namespace ApplesGame
     constexpr int TOTAL_APPLES = 20;
     constexpr float APPLE_SIZE = 20.f;
     /* ROCKS */
-    constexpr int TOTAL_ROCKS = 10;
+    constexpr int TOTAL_ROCKS = 5;
     constexpr float ROCK_SIZE = 30.f;
 }
