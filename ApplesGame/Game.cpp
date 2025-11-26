@@ -47,7 +47,7 @@ namespace ApplesGame
                 /* Init new apple */
                 InitApple(game.apples[i], game.appleTexture);
 
-                game.player.speed += ACCELERATION;
+                game.player.speed += PLAYER_ACCELERATION;
             }
         }
     }

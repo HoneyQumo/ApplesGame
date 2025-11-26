@@ -6,7 +6,7 @@ namespace ApplesGame
     {
         player.position.x = SCREEN_WIDTH / 2.f;
         player.position.y = SCREEN_HEIGHT / 2.f;
-        player.speed = INITIAL_SPEED;
+        player.speed = PLAYER_INITIAL_SPEED;
         player.direction = PlayerDirection::Right;
 
         player.sprite.setTexture(texture);
