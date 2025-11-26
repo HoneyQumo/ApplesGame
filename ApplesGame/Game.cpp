@@ -1,5 +1,5 @@
-﻿#include "Game.h"
-#include <cassert>
+﻿#include <cassert>
+#include "Game.h"
 
 namespace ApplesGame
 {
@@ -8,6 +8,7 @@ namespace ApplesGame
         game.isGameOver = false;
         game.numEatenApples = 0;
 
+        InitSounds(game.sound, game.soundBuffer);
         InitPlayer(game.player, game.playerTexture);
 
         for (Apple& apple : game.apples)
@@ -23,9 +24,14 @@ namespace ApplesGame
 
     void InitGame(Game& game)
     {
+        /* Textures */
         assert(game.playerTexture.loadFromFile(RESOURCES_PATH + "\\Player.png"));
         assert(game.appleTexture.loadFromFile(RESOURCES_PATH + "\\Apple.png"));
         assert(game.rockTexture.loadFromFile(RESOURCES_PATH + "\\Rock.png"));
+
+        /* Sounds */
+        assert(game.soundBuffer.playerDeath.loadFromFile(RESOURCES_PATH + "\\Death.wav"));
+        assert(game.soundBuffer.appleEat.loadFromFile(RESOURCES_PATH + "\\AppleEat.wav"));
 
         RestartGame(game);
     }
@@ -34,6 +40,8 @@ namespace ApplesGame
     {
         if (game.isGameOver)
         {
+            game.sound.playerDeath.play();
+
             /* Pause GAME LOOP */
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -51,6 +59,7 @@ namespace ApplesGame
                 game.isGameOver = true;
             }
 
+            /* Player to Apple collision */
             for (Apple& apple : game.apples)
             {
                 if (IsCircleCollide(
@@ -58,6 +67,8 @@ namespace ApplesGame
                         apple.position, APPLE_SIZE / 2.f)
                 )
                 {
+                    game.sound.appleEat.play();
+
                     /* Count eated apples */
                     ++game.numEatenApples;
 
@@ -68,6 +79,7 @@ namespace ApplesGame
                 }
             }
 
+            /* Player to Rock collision */
             for (Rock& rock : game.rocks)
             {
                 if (IsRectangleCollide(

@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Apple.h"
 #include "Rock.h"
+#include "Sounds.h"
 
 namespace ApplesGame
 {
@@ -18,6 +19,9 @@ namespace ApplesGame
         sf::Texture playerTexture;
         sf::Texture appleTexture;
         sf::Texture rockTexture;
+
+        GameSoundBuffer soundBuffer;
+        GameSound sound;
     };
 
     void RestartGame(Game& game);
