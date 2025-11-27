@@ -7,7 +7,9 @@ namespace ApplesGame
     const std::string RESOURCES_PATH = "Resources/";
     constexpr int SCREEN_WIDTH = 800;
     constexpr int SCREEN_HEIGHT = 600;
+    constexpr float SCREEN_PADDING = 10.f;
     constexpr float INITIAL_VOLUME = 25.f;
+    constexpr int TIMEOUT_BEFORE_RESTART_IN_SECONDS = 2;
     /* Player */
     constexpr float PLAYER_INITIAL_SPEED = 100.f;
     constexpr float PLAYER_SIZE = 40.f;

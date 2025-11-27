@@ -9,6 +9,7 @@ namespace ApplesGame
         game.numEatenApples = 0;
 
         InitSounds(game.sound, game.soundBuffer);
+        InitUI(game.hud, game.font);
         InitPlayer(game.player, game.playerTexture);
 
         for (Apple& apple : game.apples)
@@ -33,6 +34,9 @@ namespace ApplesGame
         assert(game.soundBuffer.playerDeath.loadFromFile(RESOURCES_PATH + "\\Death.wav"));
         assert(game.soundBuffer.appleEat.loadFromFile(RESOURCES_PATH + "\\AppleEat.wav"));
 
+        /* Fonts */
+        assert(game.font.loadFromFile(RESOURCES_PATH + "\\Fonts\\Roboto-Regular.ttf"));
+
         RestartGame(game);
     }
 
@@ -43,7 +47,7 @@ namespace ApplesGame
             game.sound.playerDeath.play();
 
             /* Pause GAME LOOP */
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_BEFORE_RESTART_IN_SECONDS));
 
             RestartGame(game);
         }
@@ -91,6 +95,8 @@ namespace ApplesGame
                 }
             }
         }
+
+        UpdateUI(game.hud, game);
     }
 
     void DrawGame(sf::RenderWindow& window, Game& game)
@@ -107,6 +113,8 @@ namespace ApplesGame
         {
             DrawRock(rock, window);
         }
+
+        DrawUI(game.hud, window, game);
     }
 
     void KeyboardHandler(PlayerDirection& playerDirection)

@@ -36,4 +36,6 @@ namespace ApplesGame
     sf::Vector2f GetSpriteSize(const sf::Sprite& sprite, const Vector2D& desiredSize);
 
     void SetSpriteOrigin(sf::Sprite& sprite, float originX, float originY);
+
+    sf::Vector2f GetTextOrigin(const sf::Text& text, const Vector2D& relativePosition);
 }

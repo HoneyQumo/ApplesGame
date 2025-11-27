@@ -5,11 +5,18 @@
 #include "Apple.h"
 #include "Rock.h"
 #include "Sounds.h"
+#include "GameUI.h"
 
 namespace ApplesGame
 {
     struct Game
     {
+        GameSoundBuffer soundBuffer;
+        GameSound sound;
+
+        sf::Font font;
+        GameUI hud;
+
         Player player;
         Apple apples[TOTAL_APPLES];
         Rock rocks[TOTAL_ROCKS];
@@ -19,9 +26,6 @@ namespace ApplesGame
         sf::Texture playerTexture;
         sf::Texture appleTexture;
         sf::Texture rockTexture;
-
-        GameSoundBuffer soundBuffer;
-        GameSound sound;
     };
 
     void RestartGame(Game& game);
