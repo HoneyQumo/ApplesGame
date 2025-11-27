@@ -5,7 +5,7 @@
 
 namespace ApplesGame
 {
-    struct GameUI
+    struct HUD
     {
         sf::Text score;
 
@@ -17,9 +17,9 @@ namespace ApplesGame
 
     struct Game;
 
-    void InitUI(GameUI& gameUI, const sf::Font& font);
+    void InitHUD(HUD& hud, const sf::Font& font);
 
-    void UpdateUI(GameUI& gameUI, const Game& game);
+    void UpdateHUD(HUD& hud, const Game& game);
 
-    void DrawUI(const GameUI& gameUI, sf::RenderWindow& window, const Game& game);
+    void DrawHUD(const HUD& hud, sf::RenderWindow& window, const Game& game);
 }

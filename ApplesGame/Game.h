@@ -5,7 +5,7 @@
 #include "Apple.h"
 #include "Rock.h"
 #include "Sounds.h"
-#include "GameUI.h"
+#include "HUD.h"
 
 namespace ApplesGame
 {
@@ -15,7 +15,7 @@ namespace ApplesGame
         GameSound sound;
 
         sf::Font font;
-        GameUI hud;
+        HUD hud;
 
         Player player;
         Apple apples[TOTAL_APPLES];

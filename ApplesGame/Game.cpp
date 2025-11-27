@@ -9,7 +9,7 @@ namespace ApplesGame
         game.numEatenApples = 0;
 
         InitSounds(game.sound, game.soundBuffer);
-        InitUI(game.hud, game.font);
+        InitHUD(game.hud, game.font);
         InitPlayer(game.player, game.playerTexture);
 
         for (Apple& apple : game.apples)
@@ -96,7 +96,7 @@ namespace ApplesGame
             }
         }
 
-        UpdateUI(game.hud, game);
+        UpdateHUD(game.hud, game);
     }
 
     void DrawGame(sf::RenderWindow& window, Game& game)
@@ -114,7 +114,7 @@ namespace ApplesGame
             DrawRock(rock, window);
         }
 
-        DrawUI(game.hud, window, game);
+        DrawHUD(game.hud, window, game);
     }
 
     void KeyboardHandler(PlayerDirection& playerDirection)
