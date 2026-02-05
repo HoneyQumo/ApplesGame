@@ -6,22 +6,33 @@
 #include "Rock.h"
 #include "Sounds.h"
 #include "HUD.h"
+#include "StartScreen.h"
 
 namespace ApplesGame
 {
     struct Game
     {
+        int numEatenApples = 0;
+        bool isShowStartScreen = true;
+        bool isGameOver = false;
+
+        /* Difficult Settings */
+        bool isInfinite = true;
+        bool isAccelerated = true;
+        int totalApples = TOTAL_APPLES;
+
         GameSoundBuffer soundBuffer;
         GameSound sound;
 
         sf::Font font;
         HUD hud;
+        StartScreen startScreen;
 
         Player player;
+        // Apple* apples = new Apple[totalApples];
         Apple apples[TOTAL_APPLES];
+
         Rock rocks[TOTAL_ROCKS];
-        int numEatenApples = 0;
-        bool isGameOver = false;
 
         sf::Texture playerTexture;
         sf::Texture appleTexture;

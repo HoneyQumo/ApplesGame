@@ -8,6 +8,7 @@ namespace ApplesGame
     struct HUD
     {
         sf::Text score;
+        sf::Text speed;
 
         sf::Text wasdHint;
         sf::Text escapeHint;

@@ -5,12 +5,20 @@ namespace ApplesGame
 {
     void RestartGame(Game& game)
     {
+        game.isShowStartScreen = true;
         game.isGameOver = false;
         game.numEatenApples = 0;
 
         InitSounds(game.sound, game.soundBuffer);
+        InitStartScreen(game.startScreen, game.font);
         InitHUD(game.hud, game.font);
         InitPlayer(game.player, game.playerTexture);
+
+        // for (int i = 0; i < game.totalApples; ++i)
+        // {
+        //     Apple& apple = game.apples[i];
+        //     InitApple(apple, game.appleTexture);
+        // }
 
         for (Apple& apple : game.apples)
         {
@@ -42,6 +50,13 @@ namespace ApplesGame
 
     void UpdateGame(Game& game, const float& time)
     {
+        if (game.isShowStartScreen)
+        {
+            UpdateStartScreen(game.startScreen, game);
+            return;
+        }
+
+
         if (game.isGameOver)
         {
             game.sound.playerDeath.play();
@@ -76,12 +91,59 @@ namespace ApplesGame
                     /* Count eated apples */
                     ++game.numEatenApples;
 
-                    /* Init new apple */
-                    InitApple(apple, game.appleTexture);
+                    if (game.isInfinite)
+                    {
+                        /* Init new apple */
+                        InitApple(apple, game.appleTexture);
+                    }
 
-                    game.player.speed += PLAYER_ACCELERATION;
+
+                    if (game.isAccelerated)
+                    {
+                        game.player.speed += PLAYER_ACCELERATION;
+                    }
                 }
             }
+
+            // for (int i = 0; i < game.totalApples;)
+            // {
+            //     Apple& apple = game.apples[i];
+            //
+            //     if (IsCircleCollide(
+            //             game.player.position, PLAYER_SIZE / 2.f,
+            //             apple.position, APPLE_SIZE / 2.f)
+            //     )
+            //     {
+            //         game.sound.appleEat.play();
+            //
+            //         /* Count eated apples */
+            //         ++game.numEatenApples;
+            //
+            //         if (game.isInfinite)
+            //         {
+            //             InitApple(apple, game.appleTexture);
+            //         }
+            //         else
+            //         {
+            //             /* Удалить из массива текущий элемент и записать новый массив */
+            //
+            //             // Apple* newApples = new Apple[game.totalApples - 1];
+            //             //
+            //             // std::copy(game.apples, game.apples + i, newApples);
+            //             // std::copy(game.apples + i + 1, game.apples + game.totalApples, newApples + i);
+            //             //
+            //             // --game.totalApples;
+            //             // delete[] game.apples;
+            //             // game.apples = newApples;
+            //         }
+            //
+            //
+            //         if (game.isAccelerated)
+            //         {
+            //             game.player.speed += PLAYER_ACCELERATION;
+            //         }
+            //     }
+            // }
 
             /* Player to Rock collision */
             for (Rock& rock : game.rocks)
@@ -101,12 +163,24 @@ namespace ApplesGame
 
     void DrawGame(sf::RenderWindow& window, Game& game)
     {
+        if (game.isShowStartScreen)
+        {
+            DrawStartScreen(game.startScreen, window);
+            return;
+        }
+
         DrawPlayer(game.player, window);
 
-        for (Apple& apple : game.apples)
+        for (int i = 0; i < game.totalApples; ++i)
         {
+            Apple& apple = game.apples[i];
             DrawApple(apple, window);
         }
+
+        // for (Apple& apple : game.apples)
+        // {
+        //     DrawApple(apple, window);
+        // }
 
 
         for (Rock& rock : game.rocks)

@@ -39,8 +39,19 @@ int main()
 
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
             {
-                window.close();
-                break;
+                if (game.isShowStartScreen)
+                {
+                    window.close();
+                    break;
+                }
+
+                RestartGame(game);
+            }
+
+            /* Start Screen */
+            if (game.isShowStartScreen)
+            {
+                StartScreenKeyboardHandler(event, game);
             }
         }
 
