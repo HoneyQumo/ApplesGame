@@ -5,9 +5,12 @@ namespace ApplesGame
 {
     void RestartGame(Game& game)
     {
+        game.totalApples = TOTAL_APPLES;
+        game.apples = std::make_unique<Apple[]>(game.totalApples);
+        game.numEatenApples = 0;
+
         game.isShowStartScreen = true;
         game.isGameOver = false;
-        game.numEatenApples = 0;
 
         InitSounds(game.sound, game.soundBuffer);
         InitStartScreen(game.startScreen, game.font);
@@ -93,6 +96,7 @@ namespace ApplesGame
                     }
                     else
                     {
+                        /* Delete collision apple */
                         auto newApples = std::make_unique<Apple[]>(game.totalApples - 1);
 
                         std::copy(game.apples.get(), game.apples.get() + i, newApples.get());
