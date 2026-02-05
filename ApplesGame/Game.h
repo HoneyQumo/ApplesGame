@@ -29,8 +29,7 @@ namespace ApplesGame
         StartScreen startScreen;
 
         Player player;
-        // Apple* apples = new Apple[totalApples];
-        Apple apples[TOTAL_APPLES];
+        std::unique_ptr<Apple[]> apples = std::make_unique<Apple[]>(totalApples);
 
         Rock rocks[TOTAL_ROCKS];
 

@@ -14,14 +14,9 @@ namespace ApplesGame
         InitHUD(game.hud, game.font);
         InitPlayer(game.player, game.playerTexture);
 
-        // for (int i = 0; i < game.totalApples; ++i)
-        // {
-        //     Apple& apple = game.apples[i];
-        //     InitApple(apple, game.appleTexture);
-        // }
-
-        for (Apple& apple : game.apples)
+        for (unsigned int i = 0; i < game.totalApples; ++i)
         {
+            Apple& apple = game.apples[i];
             InitApple(apple, game.appleTexture);
         }
 
@@ -79,11 +74,11 @@ namespace ApplesGame
             }
 
             /* Player to Apple collision */
-            for (Apple& apple : game.apples)
+            for (unsigned int i = 0; i < game.totalApples; ++i)
             {
                 if (IsCircleCollide(
                         game.player.position, PLAYER_SIZE / 2.f,
-                        apple.position, APPLE_SIZE / 2.f)
+                        game.apples[i].position, APPLE_SIZE / 2.f)
                 )
                 {
                     game.sound.appleEat.play();
@@ -94,7 +89,19 @@ namespace ApplesGame
                     if (game.isInfinite)
                     {
                         /* Init new apple */
-                        InitApple(apple, game.appleTexture);
+                        InitApple(game.apples[i], game.appleTexture);
+                    }
+                    else
+                    {
+                        auto newApples = std::make_unique<Apple[]>(game.totalApples - 1);
+
+                        std::copy(game.apples.get(), game.apples.get() + i, newApples.get());
+                        std::copy(game.apples.get() + i + 1,
+                                  game.apples.get() + game.totalApples,
+                                  newApples.get() + i);
+
+                        game.apples = std::move(newApples);
+                        --game.totalApples;
                     }
 
 
@@ -104,46 +111,6 @@ namespace ApplesGame
                     }
                 }
             }
-
-            // for (int i = 0; i < game.totalApples;)
-            // {
-            //     Apple& apple = game.apples[i];
-            //
-            //     if (IsCircleCollide(
-            //             game.player.position, PLAYER_SIZE / 2.f,
-            //             apple.position, APPLE_SIZE / 2.f)
-            //     )
-            //     {
-            //         game.sound.appleEat.play();
-            //
-            //         /* Count eated apples */
-            //         ++game.numEatenApples;
-            //
-            //         if (game.isInfinite)
-            //         {
-            //             InitApple(apple, game.appleTexture);
-            //         }
-            //         else
-            //         {
-            //             /* Удалить из массива текущий элемент и записать новый массив */
-            //
-            //             // Apple* newApples = new Apple[game.totalApples - 1];
-            //             //
-            //             // std::copy(game.apples, game.apples + i, newApples);
-            //             // std::copy(game.apples + i + 1, game.apples + game.totalApples, newApples + i);
-            //             //
-            //             // --game.totalApples;
-            //             // delete[] game.apples;
-            //             // game.apples = newApples;
-            //         }
-            //
-            //
-            //         if (game.isAccelerated)
-            //         {
-            //             game.player.speed += PLAYER_ACCELERATION;
-            //         }
-            //     }
-            // }
 
             /* Player to Rock collision */
             for (Rock& rock : game.rocks)
@@ -171,16 +138,10 @@ namespace ApplesGame
 
         DrawPlayer(game.player, window);
 
-        for (int i = 0; i < game.totalApples; ++i)
+        for (unsigned int i = 0; i < game.totalApples; ++i)
         {
-            Apple& apple = game.apples[i];
-            DrawApple(apple, window);
+            DrawApple(game.apples[i], window);
         }
-
-        // for (Apple& apple : game.apples)
-        // {
-        //     DrawApple(apple, window);
-        // }
 
 
         for (Rock& rock : game.rocks)
