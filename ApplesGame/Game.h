@@ -12,14 +12,14 @@ namespace ApplesGame
 {
     struct Game
     {
-        int numEatenApples = 0;
+        unsigned int numEatenApples = 0;
         bool isShowStartScreen = true;
         bool isGameOver = false;
 
         /* Difficult Settings */
         bool isInfinite = true;
         bool isAccelerated = true;
-        int totalApples = TOTAL_APPLES;
+        unsigned int totalApples = TOTAL_APPLES;
 
         GameSoundBuffer soundBuffer;
         GameSound sound;
