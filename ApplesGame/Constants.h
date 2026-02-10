@@ -9,6 +9,7 @@ namespace ApplesGame
     constexpr unsigned int SCREEN_HEIGHT = 600;
     constexpr float SCREEN_PADDING = 10.f;
     constexpr float INITIAL_VOLUME = 25.f;
+    constexpr float GAME_DIFFICULT_SETTING_OFFSET = (SCREEN_HEIGHT / 100.f) * 30.f;
     constexpr unsigned int TIMEOUT_BEFORE_RESTART_IN_SECONDS = 2;
     /* Player */
     constexpr float PLAYER_INITIAL_SPEED = 100.f;

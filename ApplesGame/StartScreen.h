@@ -10,8 +10,9 @@ namespace ApplesGame
         sf::Text exitHint;
         sf::Text startHint;
 
-        sf::Text isInfiniteOption;
-        sf::Text isAcceleratedOption;
+        sf::Text modeSettingsTitle;
+        sf::Text isInfiniteMode;
+        sf::Text isAcceleratedMode;
     };
 
     struct Game;

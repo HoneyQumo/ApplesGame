@@ -19,17 +19,26 @@ namespace ApplesGame
         screen.exitHint.setPosition(SCREEN_WIDTH - SCREEN_PADDING, SCREEN_PADDING);
         screen.exitHint.setOrigin(GetTextOrigin(screen.exitHint, {1.f, 0.f}));
 
-        screen.isInfiniteOption.setString("[1] Infinite: ");
-        screen.isInfiniteOption.setFont(font);
-        screen.isInfiniteOption.setCharacterSize(16);
-        screen.isInfiniteOption.setFillColor(sf::Color::White);
-        screen.isInfiniteOption.setPosition(SCREEN_PADDING, SCREEN_PADDING);
+        screen.modeSettingsTitle.setString("Game settings: ");
+        screen.modeSettingsTitle.setFont(font);
+        screen.modeSettingsTitle.setCharacterSize(24);
+        screen.modeSettingsTitle.setFillColor(sf::Color::White);
+        screen.modeSettingsTitle.setPosition(SCREEN_WIDTH / 2.f, GAME_DIFFICULT_SETTING_OFFSET - 30.f);
+        screen.modeSettingsTitle.setOrigin(GetTextOrigin(screen.modeSettingsTitle, {0.5f, 0.5f}));
 
-        screen.isAcceleratedOption.setString("[2] Acceleration: ");
-        screen.isAcceleratedOption.setFont(font);
-        screen.isAcceleratedOption.setCharacterSize(16);
-        screen.isAcceleratedOption.setFillColor(sf::Color::White);
-        screen.isAcceleratedOption.setPosition(SCREEN_PADDING, SCREEN_PADDING + 20.f);
+        screen.isInfiniteMode.setString("[1] Infinite: ");
+        screen.isInfiniteMode.setFont(font);
+        screen.isInfiniteMode.setCharacterSize(24);
+        screen.isInfiniteMode.setFillColor(sf::Color::White);
+        screen.isInfiniteMode.setPosition((SCREEN_WIDTH / 2.f) - 100.f, GAME_DIFFICULT_SETTING_OFFSET);
+        screen.isInfiniteMode.setOrigin(GetTextOrigin(screen.isInfiniteMode, {0.f, 0.5f}));
+
+        screen.isAcceleratedMode.setString("[2] Acceleration: ");
+        screen.isAcceleratedMode.setFont(font);
+        screen.isAcceleratedMode.setCharacterSize(24);
+        screen.isAcceleratedMode.setFillColor(sf::Color::White);
+        screen.isAcceleratedMode.setPosition((SCREEN_WIDTH / 2.f) - 100.f, GAME_DIFFICULT_SETTING_OFFSET + 30.f);
+        screen.isAcceleratedMode.setOrigin(GetTextOrigin(screen.isAcceleratedMode, {0.f, 0.5f}));
 
         screen.startHint.setString("Press [Space] to start");
         screen.startHint.setFont(font);
@@ -43,25 +52,25 @@ namespace ApplesGame
     {
         if (IsEnableGameMode(game.mode, GameModeSettingsBitMask::IsInfinite))
         {
-            screen.isInfiniteOption.setString("[1] Infinite: " + std::string("+"));
-            screen.isInfiniteOption.setFillColor(sf::Color::Green);
+            screen.isInfiniteMode.setString("[1] Infinite: " + std::string("+"));
+            screen.isInfiniteMode.setFillColor(sf::Color::Green);
         }
         else
         {
-            screen.isInfiniteOption.setString("[1] Infinite: " + std::string("-"));
-            screen.isInfiniteOption.setFillColor(sf::Color::Red);
+            screen.isInfiniteMode.setString("[1] Infinite: " + std::string("-"));
+            screen.isInfiniteMode.setFillColor(sf::Color::Red);
         }
 
 
         if (IsEnableGameMode(game.mode, GameModeSettingsBitMask::IsAccelerated))
         {
-            screen.isAcceleratedOption.setString("[2] Acceleration: " + std::string("+"));
-            screen.isAcceleratedOption.setFillColor(sf::Color::Green);
+            screen.isAcceleratedMode.setString("[2] Acceleration: " + std::string("+"));
+            screen.isAcceleratedMode.setFillColor(sf::Color::Green);
         }
         else
         {
-            screen.isAcceleratedOption.setString("[2] Acceleration: " + std::string("-"));
-            screen.isAcceleratedOption.setFillColor(sf::Color::Red);
+            screen.isAcceleratedMode.setString("[2] Acceleration: " + std::string("-"));
+            screen.isAcceleratedMode.setFillColor(sf::Color::Red);
         }
     }
 
@@ -69,8 +78,9 @@ namespace ApplesGame
     {
         window.draw(screen.title);
         window.draw(screen.exitHint);
-        window.draw(screen.isInfiniteOption);
-        window.draw(screen.isAcceleratedOption);
+        window.draw(screen.modeSettingsTitle);
+        window.draw(screen.isInfiniteMode);
+        window.draw(screen.isAcceleratedMode);
         window.draw(screen.startHint);
     }
 
