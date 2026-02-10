@@ -10,15 +10,19 @@
 
 namespace ApplesGame
 {
+    enum class GameModeSettingsBitMask
+    {
+        IsInfinite = 1 << 0,
+        IsAccelerated = 1 << 1,
+    };
+
     struct Game
     {
         unsigned int numEatenApples = 0;
         bool isShowStartScreen = true;
         bool isGameOver = false;
 
-        /* Difficult Settings */
-        bool isInfinite = true;
-        bool isAccelerated = true;
+        uint8_t mode = 0; /* difficult settings */
         unsigned int totalApples = TOTAL_APPLES;
 
         GameSoundBuffer soundBuffer;
@@ -47,4 +51,10 @@ namespace ApplesGame
     void DrawGame(sf::RenderWindow& window, Game& game);
 
     void KeyboardHandler(PlayerDirection& playerDirection);
+
+    bool IsEnableGameMode(const uint8_t& mode, const GameModeSettingsBitMask& mask);
+
+    void EnableGameMode(uint8_t& mode, const GameModeSettingsBitMask& mask);
+
+    void DisableGameMode(uint8_t& mode, const GameModeSettingsBitMask& mask);
 }

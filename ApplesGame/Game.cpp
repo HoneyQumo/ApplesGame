@@ -89,7 +89,7 @@ namespace ApplesGame
                     /* Count eated apples */
                     ++game.numEatenApples;
 
-                    if (game.isInfinite)
+                    if (IsEnableGameMode(game.mode, GameModeSettingsBitMask::IsInfinite))
                     {
                         /* Init new apple */
                         InitApple(game.apples[i], game.appleTexture);
@@ -109,7 +109,7 @@ namespace ApplesGame
                     }
 
 
-                    if (game.isAccelerated)
+                    if (IsEnableGameMode(game.mode, GameModeSettingsBitMask::IsAccelerated))
                     {
                         game.player.speed += PLAYER_ACCELERATION;
                     }
@@ -174,5 +174,20 @@ namespace ApplesGame
         {
             playerDirection = PlayerDirection::Down;
         }
+    }
+
+    bool IsEnableGameMode(const uint8_t& mode, const GameModeSettingsBitMask& mask)
+    {
+        return mode & static_cast<uint8_t>(mask);
+    }
+
+    void EnableGameMode(uint8_t& mode, const GameModeSettingsBitMask& mask)
+    {
+        mode |= static_cast<uint8_t>(mask);
+    }
+
+    void DisableGameMode(uint8_t& mode, const GameModeSettingsBitMask& mask)
+    {
+        mode &= ~static_cast<uint8_t>(mask);
     }
 }

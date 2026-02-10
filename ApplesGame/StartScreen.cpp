@@ -41,7 +41,7 @@ namespace ApplesGame
 
     void UpdateStartScreen(StartScreen& screen, const Game& game)
     {
-        if (game.isInfinite)
+        if (IsEnableGameMode(game.mode, GameModeSettingsBitMask::IsInfinite))
         {
             screen.isInfiniteOption.setString("[1] Infinite: " + std::string("+"));
             screen.isInfiniteOption.setFillColor(sf::Color::Green);
@@ -53,7 +53,7 @@ namespace ApplesGame
         }
 
 
-        if (game.isAccelerated)
+        if (IsEnableGameMode(game.mode, GameModeSettingsBitMask::IsAccelerated))
         {
             screen.isAcceleratedOption.setString("[2] Acceleration: " + std::string("+"));
             screen.isAcceleratedOption.setFillColor(sf::Color::Green);
@@ -78,11 +78,15 @@ namespace ApplesGame
     {
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num1)
         {
-            game.isInfinite = !game.isInfinite;
+            IsEnableGameMode(game.mode, GameModeSettingsBitMask::IsInfinite)
+                ? DisableGameMode(game.mode, GameModeSettingsBitMask::IsInfinite)
+                : EnableGameMode(game.mode, GameModeSettingsBitMask::IsInfinite);
         }
         else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num2)
         {
-            game.isAccelerated = !game.isAccelerated;
+            IsEnableGameMode(game.mode, GameModeSettingsBitMask::IsAccelerated)
+                ? DisableGameMode(game.mode, GameModeSettingsBitMask::IsAccelerated)
+                : EnableGameMode(game.mode, GameModeSettingsBitMask::IsAccelerated);
         }
         else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
         {
