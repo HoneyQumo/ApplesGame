@@ -7,6 +7,7 @@
 #include "Sounds.h"
 #include "HUD.h"
 #include "StartScreen.h"
+#include "Leaderboard.h"
 
 namespace ApplesGame
 {
@@ -34,8 +35,19 @@ namespace ApplesGame
 
         Player player;
         std::unique_ptr<Apple[]> apples = std::make_unique<Apple[]>(totalApples);
-
         Rock rocks[TOTAL_ROCKS];
+
+        std::vector<Leaderboard> leaderboard = {
+            {"Player 1", 100},
+            {"Player 2", 10},
+            {"Player 3", 87},
+            {"Player 4", 34},
+            {"Player 5", 999},
+            {"Player 6", 777},
+            {"Player 7", 111},
+            {"Player 8", 123},
+            {"Player 9", 891},
+        };
 
         sf::Texture playerTexture;
         sf::Texture appleTexture;

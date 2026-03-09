@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Game.h"
 
+
 namespace ApplesGame
 {
     struct StartScreen
@@ -13,11 +14,15 @@ namespace ApplesGame
         sf::Text modeSettingsTitle;
         sf::Text isInfiniteMode;
         sf::Text isAcceleratedMode;
+
+        sf::Text leaderboardTitle;
+        std::vector<sf::Text> leaderboardVector;
     };
 
     struct Game;
+    struct Leaderboard;
 
-    void InitStartScreen(StartScreen& screen, const sf::Font& font);
+    void InitStartScreen(std::vector<Leaderboard>& leaderboard, StartScreen& screen, const sf::Font& font);
 
     void UpdateStartScreen(StartScreen& screen, const Game& game);
 

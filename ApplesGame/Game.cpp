@@ -13,7 +13,7 @@ namespace ApplesGame
         game.isGameOver = false;
 
         InitSounds(game.sound, game.soundBuffer);
-        InitStartScreen(game.startScreen, game.font);
+        InitStartScreen(game.leaderboard, game.startScreen, game.font);
         InitHUD(game.hud, game.font);
         InitPlayer(game.player, game.playerTexture);
 
