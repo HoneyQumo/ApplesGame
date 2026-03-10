@@ -7,12 +7,10 @@ namespace ApplesGame
     struct Leaderboard
     {
         std::string name;
-        int score;
+        unsigned int score;
     };
 
-    // int lastPlayerScore = -1;
-    //
-    // void UpdateLeaderboard(std::vector<Leaderboard>& vector);
-    //
-    // void UpdatePlayerPosition(const int& newScore, const int& previousScore, std::vector<Leaderboard>& vector);
+    void UpdateLeaderboard(std::vector<Leaderboard>& vector);
+
+    void UpdatePlayerPosition(const unsigned int& newScore, const std::string& playerName, std::vector<Leaderboard>& vector);
 }

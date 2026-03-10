@@ -43,7 +43,7 @@ namespace ApplesGame
 
     void UpdateHUD(HUD& hud, const Game& game)
     {
-        hud.score.setString("Score: " + std::to_string(game.numEatenApples));
+        hud.score.setString("Score: " + std::to_string(game.playerScore));
         hud.speed.setString("Speed: " + std::to_string(static_cast<int>(game.player.speed)));
     }
 

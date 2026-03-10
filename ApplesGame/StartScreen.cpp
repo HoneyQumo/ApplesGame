@@ -56,7 +56,7 @@ namespace ApplesGame
         screen.leaderboardTitle.setPosition(SCREEN_WIDTH / 2.f, LEADERBOARD_OFFSET - 50.f);
         screen.leaderboardTitle.setOrigin(GetTextOrigin(screen.leaderboardTitle, {0.5f, 1.f}));
 
-
+        screen.leaderboardVector.clear();
         for (int i = 0; i < leaderboard.size(); ++i)
         {
             Leaderboard& item = leaderboard[i];
@@ -65,7 +65,7 @@ namespace ApplesGame
             tmpItem.setString(item.name + " - " + std::to_string(item.score));
             tmpItem.setFont(font);
             tmpItem.setCharacterSize(14);
-            tmpItem.setFillColor(sf::Color::White);
+            tmpItem.setFillColor(item.name == "You" ? sf::Color::Yellow : sf::Color::White);
             tmpItem.setPosition(SCREEN_WIDTH / 2.f, LEADERBOARD_OFFSET + (i * 30.f));
             tmpItem.setOrigin(GetTextOrigin(screen.leaderboardTitle, {0.5f, 1.f}));
 

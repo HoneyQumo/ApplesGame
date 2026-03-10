@@ -19,7 +19,8 @@ namespace ApplesGame
 
     struct Game
     {
-        unsigned int numEatenApples = 0;
+        unsigned int playerScore = 0;
+
         bool isShowStartScreen = true;
         bool isGameOver = false;
 
@@ -37,17 +38,7 @@ namespace ApplesGame
         std::unique_ptr<Apple[]> apples = std::make_unique<Apple[]>(totalApples);
         Rock rocks[TOTAL_ROCKS];
 
-        std::vector<Leaderboard> leaderboard = {
-            {"Player 1", 100},
-            {"Player 2", 10},
-            {"Player 3", 87},
-            {"Player 4", 34},
-            {"Player 5", 999},
-            {"Player 6", 777},
-            {"Player 7", 111},
-            {"Player 8", 123},
-            {"Player 9", 891},
-        };
+        std::vector<Leaderboard> leaderboard;
 
         sf::Texture playerTexture;
         sf::Texture appleTexture;
@@ -69,4 +60,6 @@ namespace ApplesGame
     void EnableGameMode(uint8_t& mode, const GameModeSettingsBitMask& mask);
 
     void DisableGameMode(uint8_t& mode, const GameModeSettingsBitMask& mask);
+
+    std::vector<Leaderboard> GenerateRandomLeaderboard(unsigned int count = 10);
 }

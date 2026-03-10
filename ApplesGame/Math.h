@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <random>
 
 namespace ApplesGame
 {
@@ -13,6 +14,8 @@ namespace ApplesGame
     using Position2D = Vector2D;
 
     float GetFloatInRange(float a, float b);
+
+    int GetIntegerInRange(int a, int b);
 
     Position2D GetRandomPositionInScreen(float screenWidth, float screenHeight);
 

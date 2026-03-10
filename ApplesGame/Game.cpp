@@ -5,9 +5,11 @@ namespace ApplesGame
 {
     void RestartGame(Game& game)
     {
+        UpdateLeaderboard(game.leaderboard);
+
         game.totalApples = TOTAL_APPLES;
         game.apples = std::make_unique<Apple[]>(game.totalApples);
-        game.numEatenApples = 0;
+        game.playerScore = 0;
 
         game.isShowStartScreen = true;
         game.isGameOver = false;
@@ -43,6 +45,7 @@ namespace ApplesGame
         /* Fonts */
         assert(game.font.loadFromFile(RESOURCES_PATH + "\\Fonts\\Roboto-Regular.ttf"));
 
+        game.leaderboard = GenerateRandomLeaderboard(5);
         RestartGame(game);
     }
 
@@ -62,6 +65,7 @@ namespace ApplesGame
             /* Pause GAME LOOP */
             std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_BEFORE_RESTART_IN_SECONDS));
 
+            UpdatePlayerPosition(game.playerScore, game.player.name, game.leaderboard);
             RestartGame(game);
         }
         else
@@ -87,7 +91,7 @@ namespace ApplesGame
                     game.sound.appleEat.play();
 
                     /* Count eated apples */
-                    ++game.numEatenApples;
+                    ++game.playerScore;
 
                     if (IsEnableGameMode(game.mode, GameModeSettingsBitMask::IsInfinite))
                     {
@@ -189,5 +193,20 @@ namespace ApplesGame
     void DisableGameMode(uint8_t& mode, const GameModeSettingsBitMask& mask)
     {
         mode &= ~static_cast<uint8_t>(mask);
+    }
+
+    std::vector<Leaderboard> GenerateRandomLeaderboard(const unsigned int count)
+    {
+        std::vector<Leaderboard> tmpArray;
+
+        for (unsigned i = 0; i < count; ++i)
+        {
+            const std::string tmpPlayerName = "Player " + std::to_string(i + 1);
+            const unsigned int tmpRandomScore = GetIntegerInRange(0, 100);
+
+            tmpArray.push_back({tmpPlayerName, tmpRandomScore});
+        }
+
+        return tmpArray;
     }
 }
