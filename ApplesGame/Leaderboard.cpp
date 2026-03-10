@@ -3,28 +3,22 @@
 
 namespace ApplesGame
 {
-    void UpdateLeaderboard(std::vector<Leaderboard>& vector)
+    std::vector<LeaderboardPositionPair> GetSortedLeaderboardArray(const LeaderboardMap& leaderboard)
     {
-        std::stable_sort(std::begin(vector), std::end(vector), [](const Leaderboard& a, const Leaderboard& b)
+        std::vector<LeaderboardPositionPair> tmpArray(leaderboard.begin(), leaderboard.end());
+
+        std::stable_sort(std::begin(tmpArray), std::end(tmpArray), [](const LeaderboardPositionPair& a, const LeaderboardPositionPair& b)
         {
-            return a.score > b.score;
+            return a.second > b.second;
         });
+
+        return tmpArray;
     }
 
-    void UpdatePlayerPosition(const unsigned int& newScore, const std::string& playerName, std::vector<Leaderboard>& vector)
+    void UpdatePlayerPosition(const unsigned int& newScore, const std::string& playerName, LeaderboardMap& leaderboard)
     {
-        auto result = std::find_if(std::begin(vector), std::end(vector), [playerName](const Leaderboard& item)
-        {
-            return item.name == playerName;
-        });
+        unsigned int previousPlayerScore = leaderboard[playerName];
 
-        if (result != vector.end())
-        {
-            result->score = std::max(newScore, result->score);
-        }
-        else
-        {
-            vector.push_back({playerName, newScore});
-        }
+        leaderboard[playerName] = std::max(newScore, previousPlayerScore);
     }
 }

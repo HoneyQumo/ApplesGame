@@ -38,7 +38,7 @@ namespace ApplesGame
         std::unique_ptr<Apple[]> apples = std::make_unique<Apple[]>(totalApples);
         Rock rocks[TOTAL_ROCKS];
 
-        std::vector<Leaderboard> leaderboard;
+        LeaderboardMap leaderboard;
 
         sf::Texture playerTexture;
         sf::Texture appleTexture;
@@ -61,5 +61,5 @@ namespace ApplesGame
 
     void DisableGameMode(uint8_t& mode, const GameModeSettingsBitMask& mask);
 
-    std::vector<Leaderboard> GenerateRandomLeaderboard(unsigned int count = 10);
+    LeaderboardMap GenerateRandomLeaderboard(unsigned int count = 10);
 }

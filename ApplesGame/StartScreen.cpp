@@ -2,7 +2,7 @@
 
 namespace ApplesGame
 {
-    void InitStartScreen(std::vector<Leaderboard>& leaderboard, StartScreen& screen, const sf::Font& font)
+    void InitStartScreen(const LeaderboardMap& leaderboard, StartScreen& screen, const sf::Font& font)
     {
         screen.title.setString("MAIN MENU");
         screen.title.setFont(font);
@@ -57,17 +57,20 @@ namespace ApplesGame
         screen.leaderboardTitle.setOrigin(GetTextOrigin(screen.leaderboardTitle, {0.5f, 1.f}));
 
         screen.leaderboardVector.clear();
-        for (int i = 0; i < leaderboard.size(); ++i)
-        {
-            Leaderboard& item = leaderboard[i];
+        std::vector<LeaderboardPositionPair> tmpSortedLeaderboard = GetSortedLeaderboardArray(leaderboard);
 
+        int index = 0;
+        for (const auto& item : tmpSortedLeaderboard)
+        {
             sf::Text tmpItem;
-            tmpItem.setString(item.name + " - " + std::to_string(item.score));
+            tmpItem.setString(item.first + " - " + std::to_string(item.second));
             tmpItem.setFont(font);
             tmpItem.setCharacterSize(14);
-            tmpItem.setFillColor(item.name == "You" ? sf::Color::Yellow : sf::Color::White);
-            tmpItem.setPosition(SCREEN_WIDTH / 2.f, LEADERBOARD_OFFSET + (i * 30.f));
+            tmpItem.setFillColor(item.first == "You" ? sf::Color::Yellow : sf::Color::White);
+            tmpItem.setPosition(SCREEN_WIDTH / 2.f, LEADERBOARD_OFFSET + (index * 30.f));
             tmpItem.setOrigin(GetTextOrigin(screen.leaderboardTitle, {0.5f, 1.f}));
+
+            index++;
 
             screen.leaderboardVector.push_back(tmpItem);
         }

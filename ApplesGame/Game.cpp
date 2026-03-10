@@ -5,8 +5,6 @@ namespace ApplesGame
 {
     void RestartGame(Game& game)
     {
-        UpdateLeaderboard(game.leaderboard);
-
         game.totalApples = TOTAL_APPLES;
         game.apples = std::make_unique<Apple[]>(game.totalApples);
         game.playerScore = 0;
@@ -195,16 +193,16 @@ namespace ApplesGame
         mode &= ~static_cast<uint8_t>(mask);
     }
 
-    std::vector<Leaderboard> GenerateRandomLeaderboard(const unsigned int count)
+    LeaderboardMap GenerateRandomLeaderboard(const unsigned int count)
     {
-        std::vector<Leaderboard> tmpArray;
+        LeaderboardMap tmpArray;
 
         for (unsigned i = 0; i < count; ++i)
         {
             const std::string tmpPlayerName = "Player " + std::to_string(i + 1);
             const unsigned int tmpRandomScore = GetIntegerInRange(0, 100);
 
-            tmpArray.push_back({tmpPlayerName, tmpRandomScore});
+            tmpArray.insert({tmpPlayerName, tmpRandomScore});
         }
 
         return tmpArray;

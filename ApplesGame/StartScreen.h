@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <SFML/Graphics.hpp>
 #include "Game.h"
+#include "Leaderboard.h"
 
 
 namespace ApplesGame
@@ -20,9 +21,8 @@ namespace ApplesGame
     };
 
     struct Game;
-    struct Leaderboard;
 
-    void InitStartScreen(std::vector<Leaderboard>& leaderboard, StartScreen& screen, const sf::Font& font);
+    void InitStartScreen(const LeaderboardMap& leaderboard, StartScreen& screen, const sf::Font& font);
 
     void UpdateStartScreen(StartScreen& screen, const Game& game);
 
