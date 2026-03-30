@@ -7,6 +7,7 @@
 #include "Sounds.h"
 #include "HUD.h"
 #include "StartScreen.h"
+#include "Leaderboard.h"
 
 namespace ApplesGame
 {
@@ -18,7 +19,8 @@ namespace ApplesGame
 
     struct Game
     {
-        unsigned int numEatenApples = 0;
+        unsigned int playerScore = 0;
+
         bool isShowStartScreen = true;
         bool isGameOver = false;
 
@@ -34,8 +36,9 @@ namespace ApplesGame
 
         Player player;
         std::unique_ptr<Apple[]> apples = std::make_unique<Apple[]>(totalApples);
-
         Rock rocks[TOTAL_ROCKS];
+
+        LeaderboardMap leaderboard;
 
         sf::Texture playerTexture;
         sf::Texture appleTexture;
@@ -57,4 +60,6 @@ namespace ApplesGame
     void EnableGameMode(uint8_t& mode, const GameModeSettingsBitMask& mask);
 
     void DisableGameMode(uint8_t& mode, const GameModeSettingsBitMask& mask);
+
+    LeaderboardMap GenerateRandomLeaderboard(unsigned int count = 10);
 }

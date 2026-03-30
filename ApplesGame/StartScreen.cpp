@@ -2,7 +2,7 @@
 
 namespace ApplesGame
 {
-    void InitStartScreen(StartScreen& screen, const sf::Font& font)
+    void InitStartScreen(const LeaderboardMap& leaderboard, StartScreen& screen, const sf::Font& font)
     {
         screen.title.setString("MAIN MENU");
         screen.title.setFont(font);
@@ -19,33 +19,61 @@ namespace ApplesGame
         screen.exitHint.setPosition(SCREEN_WIDTH - SCREEN_PADDING, SCREEN_PADDING);
         screen.exitHint.setOrigin(GetTextOrigin(screen.exitHint, {1.f, 0.f}));
 
-        screen.modeSettingsTitle.setString("Game settings: ");
-        screen.modeSettingsTitle.setFont(font);
-        screen.modeSettingsTitle.setCharacterSize(24);
-        screen.modeSettingsTitle.setFillColor(sf::Color::White);
-        screen.modeSettingsTitle.setPosition(SCREEN_WIDTH / 2.f, GAME_DIFFICULT_SETTING_OFFSET - 30.f);
-        screen.modeSettingsTitle.setOrigin(GetTextOrigin(screen.modeSettingsTitle, {0.5f, 0.5f}));
-
-        screen.isInfiniteMode.setString("[1] Infinite: ");
-        screen.isInfiniteMode.setFont(font);
-        screen.isInfiniteMode.setCharacterSize(24);
-        screen.isInfiniteMode.setFillColor(sf::Color::White);
-        screen.isInfiniteMode.setPosition((SCREEN_WIDTH / 2.f) - 100.f, GAME_DIFFICULT_SETTING_OFFSET);
-        screen.isInfiniteMode.setOrigin(GetTextOrigin(screen.isInfiniteMode, {0.f, 0.5f}));
-
-        screen.isAcceleratedMode.setString("[2] Acceleration: ");
-        screen.isAcceleratedMode.setFont(font);
-        screen.isAcceleratedMode.setCharacterSize(24);
-        screen.isAcceleratedMode.setFillColor(sf::Color::White);
-        screen.isAcceleratedMode.setPosition((SCREEN_WIDTH / 2.f) - 100.f, GAME_DIFFICULT_SETTING_OFFSET + 30.f);
-        screen.isAcceleratedMode.setOrigin(GetTextOrigin(screen.isAcceleratedMode, {0.f, 0.5f}));
-
         screen.startHint.setString("Press [Space] to start");
         screen.startHint.setFont(font);
         screen.startHint.setCharacterSize(16);
         screen.startHint.setFillColor(sf::Color::White);
         screen.startHint.setPosition(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT - SCREEN_PADDING);
         screen.startHint.setOrigin(GetTextOrigin(screen.startHint, {0.5f, 1.f}));
+
+        /* Settings */
+        screen.modeSettingsTitle.setString("Game settings: ");
+        screen.modeSettingsTitle.setFont(font);
+        screen.modeSettingsTitle.setCharacterSize(24);
+        screen.modeSettingsTitle.setFillColor(sf::Color::White);
+        screen.modeSettingsTitle.setPosition(SCREEN_PADDING, SCREEN_PADDING);
+        screen.modeSettingsTitle.setOrigin(GetTextOrigin(screen.modeSettingsTitle, {0.f, 0.f}));
+
+        screen.isInfiniteMode.setString("[1] Infinite: ");
+        screen.isInfiniteMode.setFont(font);
+        screen.isInfiniteMode.setCharacterSize(24);
+        screen.isInfiniteMode.setFillColor(sf::Color::White);
+        screen.isInfiniteMode.setPosition(SCREEN_PADDING, SCREEN_PADDING + 30.f);
+        screen.isInfiniteMode.setOrigin(GetTextOrigin(screen.isInfiniteMode, {0.f, 0.f}));
+
+        screen.isAcceleratedMode.setString("[2] Acceleration: ");
+        screen.isAcceleratedMode.setFont(font);
+        screen.isAcceleratedMode.setCharacterSize(24);
+        screen.isAcceleratedMode.setFillColor(sf::Color::White);
+        screen.isAcceleratedMode.setPosition(SCREEN_PADDING, SCREEN_PADDING + (30.f * 2));
+        screen.isAcceleratedMode.setOrigin(GetTextOrigin(screen.isAcceleratedMode, {0.f, 0.f}));
+
+        /* Leaderboard */
+        screen.leaderboardTitle.setString("===== LEADERBOARD =====");
+        screen.leaderboardTitle.setFont(font);
+        screen.leaderboardTitle.setCharacterSize(16);
+        screen.leaderboardTitle.setFillColor(sf::Color::White);
+        screen.leaderboardTitle.setPosition(SCREEN_WIDTH / 2.f, LEADERBOARD_OFFSET - 50.f);
+        screen.leaderboardTitle.setOrigin(GetTextOrigin(screen.leaderboardTitle, {0.5f, 1.f}));
+
+        screen.leaderboardVector.clear();
+        std::vector<LeaderboardPositionPair> tmpSortedLeaderboard = GetSortedLeaderboardArray(leaderboard);
+
+        int index = 0;
+        for (const auto& item : tmpSortedLeaderboard)
+        {
+            sf::Text tmpItem;
+            tmpItem.setString(item.first + " - " + std::to_string(item.second));
+            tmpItem.setFont(font);
+            tmpItem.setCharacterSize(14);
+            tmpItem.setFillColor(item.first == "You" ? sf::Color::Yellow : sf::Color::White);
+            tmpItem.setPosition(SCREEN_WIDTH / 2.f, LEADERBOARD_OFFSET + (index * 30.f));
+            tmpItem.setOrigin(GetTextOrigin(screen.leaderboardTitle, {0.5f, 1.f}));
+
+            index++;
+
+            screen.leaderboardVector.push_back(tmpItem);
+        }
     }
 
     void UpdateStartScreen(StartScreen& screen, const Game& game)
@@ -78,10 +106,18 @@ namespace ApplesGame
     {
         window.draw(screen.title);
         window.draw(screen.exitHint);
+        window.draw(screen.startHint);
+
         window.draw(screen.modeSettingsTitle);
         window.draw(screen.isInfiniteMode);
         window.draw(screen.isAcceleratedMode);
-        window.draw(screen.startHint);
+
+        window.draw(screen.leaderboardTitle);
+
+        for (const sf::Text& item : screen.leaderboardVector)
+        {
+            window.draw(item);
+        }
     }
 
     void StartScreenKeyboardHandler(const sf::Event& event, Game& game)

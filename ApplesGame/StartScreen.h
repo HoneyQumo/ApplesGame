@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <SFML/Graphics.hpp>
 #include "Game.h"
+#include "Leaderboard.h"
+
 
 namespace ApplesGame
 {
@@ -13,11 +15,14 @@ namespace ApplesGame
         sf::Text modeSettingsTitle;
         sf::Text isInfiniteMode;
         sf::Text isAcceleratedMode;
+
+        sf::Text leaderboardTitle;
+        std::vector<sf::Text> leaderboardVector;
     };
 
     struct Game;
 
-    void InitStartScreen(StartScreen& screen, const sf::Font& font);
+    void InitStartScreen(const LeaderboardMap& leaderboard, StartScreen& screen, const sf::Font& font);
 
     void UpdateStartScreen(StartScreen& screen, const Game& game);
 

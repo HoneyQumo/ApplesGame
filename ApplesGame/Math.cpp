@@ -7,6 +7,14 @@ namespace ApplesGame
         return a + rand() / static_cast<float>(RAND_MAX) * (b - a);
     }
 
+    int GetIntegerInRange(const int a, const int b)
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(a, b);
+        return dis(gen);
+    }
+
     Position2D GetRandomPositionInScreen(const float screenWidth, const float screenHeight)
     {
         return Position2D{

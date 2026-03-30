@@ -19,7 +19,9 @@ namespace ApplesGame
         float speed = PLAYER_INITIAL_SPEED;
         PlayerDirection direction = PlayerDirection::Right;
         sf::Sprite sprite;
+        std::string name = "You";
     };
+
 
     void InitPlayer(Player& player, const sf::Texture& texture);
 
