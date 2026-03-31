@@ -47,16 +47,16 @@ namespace ApplesGame
         hud.speed.setString("Speed: " + std::to_string(static_cast<int>(game.player.speed)));
     }
 
-    void DrawHUD(const HUD& hud, sf::RenderWindow& window, const Game& game)
+    void DrawHUD(const HUD& hud, sf::RenderWindow& window)
     {
         window.draw(hud.score);
         window.draw(hud.speed);
         window.draw(hud.wasdHint);
         window.draw(hud.escapeHint);
+    }
 
-        if (game.isGameOver)
-        {
-            window.draw(hud.gameOver);
-        }
+    void DrawGameOver(const HUD& hud, sf::RenderWindow& window)
+    {
+        window.draw(hud.gameOver);
     }
 }

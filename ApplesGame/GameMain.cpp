@@ -39,7 +39,7 @@ int main()
 
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
             {
-                if (game.isShowStartScreen)
+                if (GetCurrentGameState(game) == GameState::Menu)
                 {
                     window.close();
                     break;
@@ -49,7 +49,7 @@ int main()
             }
 
             /* Start Screen */
-            if (game.isShowStartScreen)
+            if (GetCurrentGameState(game) == GameState::Menu)
             {
                 StartScreenKeyboardHandler(event, game);
             }

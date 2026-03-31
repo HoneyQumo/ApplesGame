@@ -22,5 +22,7 @@ namespace ApplesGame
 
     void UpdateHUD(HUD& hud, const Game& game);
 
-    void DrawHUD(const HUD& hud, sf::RenderWindow& window, const Game& game);
+    void DrawHUD(const HUD& hud, sf::RenderWindow& window);
+
+    void DrawGameOver(const HUD& hud, sf::RenderWindow& window);
 }

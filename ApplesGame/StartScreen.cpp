@@ -136,7 +136,8 @@ namespace ApplesGame
         }
         else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
         {
-            game.isShowStartScreen = false;
+            PopGameState(game);
+            PushGameState(game, GameState::Playing);
         }
     }
 }

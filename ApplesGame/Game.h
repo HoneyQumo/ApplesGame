@@ -17,12 +17,16 @@ namespace ApplesGame
         IsAccelerated = 1 << 1,
     };
 
+    enum class GameState
+    {
+        Menu = 0,
+        Playing,
+        GameOver,
+    };
+
     struct Game
     {
         unsigned int playerScore = 0;
-
-        bool isShowStartScreen = true;
-        bool isGameOver = false;
 
         uint8_t mode = 0; /* difficult settings */
 
@@ -33,6 +37,7 @@ namespace ApplesGame
         HUD hud;
         StartScreen startScreen;
 
+        std::vector<GameState> gameStateStack;
         Player player;
         std::vector<Apple> apples;
         Rock rocks[TOTAL_ROCKS];
@@ -45,20 +50,19 @@ namespace ApplesGame
     };
 
     void RestartGame(Game& game);
-
     void InitGame(Game& game);
-
     void UpdateGame(Game& game, const float& time);
-
     void DrawGame(sf::RenderWindow& window, Game& game);
-
     void KeyboardHandler(PlayerDirection& playerDirection);
 
     bool IsEnableGameMode(const uint8_t& mode, const GameModeSettingsBitMask& mask);
-
     void EnableGameMode(uint8_t& mode, const GameModeSettingsBitMask& mask);
-
     void DisableGameMode(uint8_t& mode, const GameModeSettingsBitMask& mask);
 
     LeaderboardMap GenerateRandomLeaderboard(unsigned int count = 10);
+
+    void ResetGameState(Game& game);
+    void PushGameState(Game& game, GameState state);
+    void PopGameState(Game& game);
+    GameState GetCurrentGameState(const Game& game);
 }
