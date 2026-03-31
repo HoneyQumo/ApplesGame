@@ -5,8 +5,7 @@ namespace ApplesGame
 {
     void RestartGame(Game& game)
     {
-        game.totalApples = TOTAL_APPLES;
-        game.apples = std::make_unique<Apple[]>(game.totalApples);
+        game.apples.clear();
         game.playerScore = 0;
 
         game.isShowStartScreen = true;
@@ -17,9 +16,9 @@ namespace ApplesGame
         InitHUD(game.hud, game.font);
         InitPlayer(game.player, game.playerTexture);
 
-        for (unsigned int i = 0; i < game.totalApples; ++i)
+        game.apples.resize(GetIntegerInRange(1, 100));
+        for (Apple& apple : game.apples)
         {
-            Apple& apple = game.apples[i];
             InitApple(apple, game.appleTexture);
         }
 
@@ -79,7 +78,7 @@ namespace ApplesGame
             }
 
             /* Player to Apple collision */
-            for (unsigned int i = 0; i < game.totalApples; ++i)
+            for (unsigned int i = 0; i < game.apples.size(); ++i)
             {
                 if (IsCircleCollide(
                         game.player.position, PLAYER_SIZE / 2.f,
@@ -99,15 +98,7 @@ namespace ApplesGame
                     else
                     {
                         /* Delete collision apple */
-                        auto newApples = std::make_unique<Apple[]>(game.totalApples - 1);
-
-                        std::copy(game.apples.get(), game.apples.get() + i, newApples.get());
-                        std::copy(game.apples.get() + i + 1,
-                                  game.apples.get() + game.totalApples,
-                                  newApples.get() + i);
-
-                        game.apples = std::move(newApples);
-                        --game.totalApples;
+                        game.apples.erase(game.apples.begin() + i);
                     }
 
 
@@ -144,11 +135,10 @@ namespace ApplesGame
 
         DrawPlayer(game.player, window);
 
-        for (unsigned int i = 0; i < game.totalApples; ++i)
+        for (Apple& apple : game.apples)
         {
-            DrawApple(game.apples[i], window);
+            DrawApple(apple, window);
         }
-
 
         for (Rock& rock : game.rocks)
         {

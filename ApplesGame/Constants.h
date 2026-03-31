@@ -16,7 +16,6 @@ namespace ApplesGame
     constexpr float PLAYER_SIZE = 40.f;
     constexpr float PLAYER_ACCELERATION = 20.f;
     /* APPLES */
-    constexpr unsigned int TOTAL_APPLES = 20;
     constexpr float APPLE_SIZE = 20.f;
     /* ROCKS */
     constexpr unsigned int TOTAL_ROCKS = 5;

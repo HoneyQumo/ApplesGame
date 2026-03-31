@@ -25,7 +25,6 @@ namespace ApplesGame
         bool isGameOver = false;
 
         uint8_t mode = 0; /* difficult settings */
-        unsigned int totalApples = TOTAL_APPLES;
 
         GameSoundBuffer soundBuffer;
         GameSound sound;
@@ -35,7 +34,7 @@ namespace ApplesGame
         StartScreen startScreen;
 
         Player player;
-        std::unique_ptr<Apple[]> apples = std::make_unique<Apple[]>(totalApples);
+        std::vector<Apple> apples;
         Rock rocks[TOTAL_ROCKS];
 
         LeaderboardMap leaderboard;
