@@ -37,29 +37,50 @@ int main()
                 break;
             }
 
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+            if (event.type == sf::Event::KeyPressed)
             {
-                if (GetCurrentGameState(game) == GameState::MainMenu)
+                if (event.key.code == sf::Keyboard::Escape)
                 {
-                    window.close();
-                    break;
+                    if (GetCurrentGameState(game) == GameState::MainMenu)
+                    {
+                        window.close();
+                        break;
+                    }
+
+                    if (GetCurrentGameState(game) == GameState::Playing)
+                    {
+                        SetPauseOptionKey(game.hud, PauseOptionKey::Continue);
+                        PushGameState(game, GameState::Pause);
+                    }
+                    else if (GetCurrentGameState(game) == GameState::Pause)
+                    {
+                        PopGameState(game);
+                    }
                 }
 
-                if (GetCurrentGameState(game) == GameState::Playing)
+                if (event.key.code == sf::Keyboard::Backspace)
                 {
-                    RestartGame(game);
+                    if (GetCurrentGameState(game) != GameState::Playing)
+                    {
+                        PopGameState(game);
+                    }
+                }
+
+                if (event.key.code == sf::Keyboard::P)
+                {
+                    if (GetCurrentGameState(game) == GameState::Playing)
+                    {
+                        SetPauseOptionKey(game.hud, PauseOptionKey::Continue);
+                        PushGameState(game, GameState::Pause);
+                    }
+                    else if (GetCurrentGameState(game) == GameState::Pause)
+                    {
+                        PopGameState(game);
+                    }
                 }
             }
 
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Backspace)
-            {
-                if (GetCurrentGameState(game) != GameState::Playing)
-                {
-                    PopGameState(game);
-                }
-            }
 
-            /* MainMenu */
             if (GetCurrentGameState(game) == GameState::MainMenu)
             {
                 MainMenuKeyboardHandler(window, event, game);
@@ -67,6 +88,10 @@ int main()
             else if (GetCurrentGameState(game) == GameState::Settings)
             {
                 SettingsKeyboardHandler(event, game);
+            }
+            else if (GetCurrentGameState(game) == GameState::Pause)
+            {
+                PauseKeyboardHandler(window, event, game);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <thread>
+#include "Shared.h"
 #include "Constants.h"
 #include "Player.h"
 #include "Apple.h"
@@ -25,6 +26,7 @@ namespace ApplesGame
         Leaderboard,
         Settings,
         Playing,
+        Pause,
         GameOver,
     };
 
@@ -67,5 +69,6 @@ namespace ApplesGame
     void ResetGameState(Game& game);
     void PushGameState(Game& game, GameState state);
     void PopGameState(Game& game);
+    void SwitchGameState(Game& game, GameState state);
     GameState GetCurrentGameState(const Game& game);
 }
