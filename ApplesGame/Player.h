@@ -20,6 +20,7 @@ namespace ApplesGame
         PlayerDirection direction = PlayerDirection::Right;
         sf::Sprite sprite;
         std::string name = "You";
+        unsigned int score = 0;
     };
 
 

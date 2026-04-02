@@ -168,7 +168,7 @@
         <ClCompile Include="Player.cpp"/>
         <ClCompile Include="Rock.cpp"/>
         <ClCompile Include="Sounds.cpp"/>
-        <ClCompile Include="StartScreen.cpp">
+        <ClCompile Include="MainMenu.cpp">
             <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
             <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
             <Optimization>Disabled</Optimization>
@@ -256,7 +256,7 @@
         <ClInclude Include="Player.h"/>
         <ClInclude Include="Rock.h"/>
         <ClInclude Include="Sounds.h"/>
-        <ClInclude Include="StartScreen.h"/>
+        <ClInclude Include="MainMenu.h"/>
     </ItemGroup>
     <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
     <ImportGroup Label="ExtensionTargets">

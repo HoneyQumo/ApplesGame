@@ -6,36 +6,43 @@
 #include "Rock.h"
 #include "Sounds.h"
 #include "HUD.h"
-#include "StartScreen.h"
+#include "MainMenu.h"
 #include "Leaderboard.h"
 
 namespace ApplesGame
 {
-    enum class GameModeSettingsBitMask
+    enum class GameModeSettingsBitMask: uint8_t
     {
         IsInfinite = 1 << 0,
         IsAccelerated = 1 << 1,
+
+        Default = IsInfinite | IsAccelerated
     };
 
     enum class GameState
     {
-        Menu = 0,
+        MainMenu = 0,
+        Leaderboard,
+        Settings,
         Playing,
         GameOver,
     };
 
     struct Game
     {
-        unsigned int playerScore = 0;
+        sf::Texture playerTexture;
+        sf::Texture appleTexture;
+        sf::Texture rockTexture;
 
-        uint8_t mode = 0; /* difficult settings */
+        sf::Font font;
 
         GameSoundBuffer soundBuffer;
         GameSound sound;
 
-        sf::Font font;
+        uint8_t mode = static_cast<uint8_t>(GameModeSettingsBitMask::Default); /* difficult settings */
+
         HUD hud;
-        StartScreen startScreen;
+        MainMenu mainMenuScreen;
 
         std::vector<GameState> gameStateStack;
         Player player;
@@ -43,10 +50,6 @@ namespace ApplesGame
         Rock rocks[TOTAL_ROCKS];
 
         LeaderboardMap leaderboard;
-
-        sf::Texture playerTexture;
-        sf::Texture appleTexture;
-        sf::Texture rockTexture;
     };
 
     void RestartGame(Game& game);

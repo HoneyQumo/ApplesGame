@@ -39,7 +39,7 @@ int main()
 
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
             {
-                if (GetCurrentGameState(game) == GameState::Menu)
+                if (GetCurrentGameState(game) == GameState::MainMenu)
                 {
                     window.close();
                     break;
@@ -48,10 +48,14 @@ int main()
                 RestartGame(game);
             }
 
-            /* Start Screen */
-            if (GetCurrentGameState(game) == GameState::Menu)
+            /* MainMenu */
+            if (GetCurrentGameState(game) == GameState::MainMenu)
             {
-                StartScreenKeyboardHandler(event, game);
+                MainMenuKeyboardHandler(window, event, game);
+            }
+            else if (GetCurrentGameState(game) == GameState::Settings)
+            {
+                SettingsKeyboardHandler(event, game);
             }
         }
 
