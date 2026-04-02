@@ -238,7 +238,7 @@ namespace ApplesGame
 
     void PopGameState(Game& game)
     {
-        if (!game.gameStateStack.empty())
+        if (game.gameStateStack.size() != 1)
         {
             game.gameStateStack.pop_back();
         }

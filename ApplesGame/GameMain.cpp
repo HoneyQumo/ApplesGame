@@ -45,7 +45,18 @@ int main()
                     break;
                 }
 
-                RestartGame(game);
+                if (GetCurrentGameState(game) == GameState::Playing)
+                {
+                    RestartGame(game);
+                }
+            }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Backspace)
+            {
+                if (GetCurrentGameState(game) != GameState::Playing)
+                {
+                    PopGameState(game);
+                }
             }
 
             /* MainMenu */

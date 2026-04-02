@@ -28,18 +28,25 @@ namespace ApplesGame
             index++;
         }
 
-        mainMenu.exitHint.setString("Exit [ESC]");
-        mainMenu.exitHint.setFont(game.font);
-        mainMenu.exitHint.setCharacterSize(16);
-        mainMenu.exitHint.setFillColor(sf::Color::White);
-        mainMenu.exitHint.setPosition(SCREEN_WIDTH - SCREEN_PADDING, SCREEN_PADDING);
-        mainMenu.exitHint.setOrigin(GetTextOrigin(mainMenu.exitHint, {1.f, 0.f}));
+        mainMenu.hintExit.setString("Exit [ESC]");
+        mainMenu.hintExit.setFont(game.font);
+        mainMenu.hintExit.setCharacterSize(16);
+        mainMenu.hintExit.setFillColor(sf::Color::White);
+        mainMenu.hintExit.setPosition(SCREEN_WIDTH - SCREEN_PADDING, SCREEN_PADDING);
+        mainMenu.hintExit.setOrigin(GetTextOrigin(mainMenu.hintExit, {1.f, 0.f}));
+
+        mainMenu.hintReturnBack.setString("Return [Backspace]");
+        mainMenu.hintReturnBack.setFont(game.font);
+        mainMenu.hintReturnBack.setCharacterSize(16);
+        mainMenu.hintReturnBack.setFillColor(sf::Color::White);
+        mainMenu.hintReturnBack.setPosition(SCREEN_WIDTH - SCREEN_PADDING, SCREEN_PADDING);
+        mainMenu.hintReturnBack.setOrigin(GetTextOrigin(mainMenu.hintReturnBack, {1.f, 0.f}));
     }
 
     void DrawMainMenu(sf::RenderWindow& window, const MainMenu& mainMenu)
     {
         window.draw(mainMenu.title);
-        window.draw(mainMenu.exitHint);
+        window.draw(mainMenu.hintExit);
 
         for (const auto& option : mainMenu.options)
         {
@@ -81,8 +88,9 @@ namespace ApplesGame
 
     void DrawLeaderboard(sf::RenderWindow& window, const MainMenu& mainMenu)
     {
-        window.draw(mainMenu.leaderboardTitle);
+        window.draw(mainMenu.hintReturnBack);
 
+        window.draw(mainMenu.leaderboardTitle);
         for (const sf::Text& item : mainMenu.leaderboardVector)
         {
             window.draw(item);
@@ -145,6 +153,8 @@ namespace ApplesGame
 
     void DrawSettings(sf::RenderWindow& window, const MainMenu& mainMenu)
     {
+        window.draw(mainMenu.hintReturnBack);
+
         window.draw(mainMenu.modeSettingsTitle);
         window.draw(mainMenu.isInfiniteMode);
         window.draw(mainMenu.isAcceleratedMode);
@@ -238,11 +248,11 @@ namespace ApplesGame
             PushGameState(game, GameState::Playing);
             break;
         case MainMenuOptionKey::Leaderboard:
-            PopGameState(game);
+            // PopGameState(game);
             PushGameState(game, GameState::Leaderboard);
             break;
         case MainMenuOptionKey::Settings:
-            PopGameState(game);
+            // PopGameState(game);
             PushGameState(game, GameState::Settings);
             break;
         case MainMenuOptionKey::Exit:

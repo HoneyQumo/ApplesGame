@@ -40,7 +40,8 @@ namespace ApplesGame
 
 
         sf::Text title;
-        sf::Text exitHint;
+        sf::Text hintExit;
+        sf::Text hintReturnBack;
 
         sf::Text modeSettingsTitle;
         sf::Text isInfiniteMode;
