@@ -101,26 +101,26 @@ namespace ApplesGame
     {
         auto& mainMenu = game.mainMenuScreen;
 
-        mainMenu.modeSettingsTitle.setString("Game settings: ");
+        mainMenu.modeSettingsTitle.setString("Settings: ");
         mainMenu.modeSettingsTitle.setFont(game.font);
-        mainMenu.modeSettingsTitle.setCharacterSize(24);
+        mainMenu.modeSettingsTitle.setCharacterSize(36);
         mainMenu.modeSettingsTitle.setFillColor(sf::Color::White);
-        mainMenu.modeSettingsTitle.setPosition(SCREEN_PADDING, SCREEN_PADDING);
-        mainMenu.modeSettingsTitle.setOrigin(GetTextOrigin(mainMenu.modeSettingsTitle, {0.f, 0.f}));
+        mainMenu.modeSettingsTitle.setPosition(SCREEN_WIDTH / 2.f, OFFSET_TOP_WINDOW_10_PERCENT);
+        mainMenu.modeSettingsTitle.setOrigin(GetTextOrigin(mainMenu.modeSettingsTitle, {0.5f, 0.5f}));
 
         mainMenu.isInfiniteMode.setString("[1] Infinite: ");
         mainMenu.isInfiniteMode.setFont(game.font);
         mainMenu.isInfiniteMode.setCharacterSize(24);
         mainMenu.isInfiniteMode.setFillColor(sf::Color::White);
-        mainMenu.isInfiniteMode.setPosition(SCREEN_PADDING, SCREEN_PADDING + 30.f);
-        mainMenu.isInfiniteMode.setOrigin(GetTextOrigin(mainMenu.isInfiniteMode, {0.f, 0.f}));
+        mainMenu.isInfiniteMode.setPosition(SCREEN_PADDING, OFFSET_TOP_WINDOW_20_PERCENT);
+        mainMenu.isInfiniteMode.setOrigin(GetTextOrigin(mainMenu.isInfiniteMode, {0.f, 0.5f}));
 
         mainMenu.isAcceleratedMode.setString("[2] Acceleration: ");
         mainMenu.isAcceleratedMode.setFont(game.font);
         mainMenu.isAcceleratedMode.setCharacterSize(24);
         mainMenu.isAcceleratedMode.setFillColor(sf::Color::White);
-        mainMenu.isAcceleratedMode.setPosition(SCREEN_PADDING, SCREEN_PADDING + (30.f * 2));
-        mainMenu.isAcceleratedMode.setOrigin(GetTextOrigin(mainMenu.isAcceleratedMode, {0.f, 0.f}));
+        mainMenu.isAcceleratedMode.setPosition(SCREEN_PADDING, OFFSET_TOP_WINDOW_20_PERCENT + 30.f);
+        mainMenu.isAcceleratedMode.setOrigin(GetTextOrigin(mainMenu.isAcceleratedMode, {0.f, 0.5f}));
     }
 
     void UpdateSettings(Game& game)
@@ -248,11 +248,9 @@ namespace ApplesGame
             PushGameState(game, GameState::Playing);
             break;
         case MainMenuOptionKey::Leaderboard:
-            // PopGameState(game);
             PushGameState(game, GameState::Leaderboard);
             break;
         case MainMenuOptionKey::Settings:
-            // PopGameState(game);
             PushGameState(game, GameState::Settings);
             break;
         case MainMenuOptionKey::Exit:
