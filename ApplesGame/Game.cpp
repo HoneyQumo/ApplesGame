@@ -6,12 +6,12 @@ namespace ApplesGame
     void RestartGame(Game& game)
     {
         game.apples.clear();
-        game.playerScore = 0;
 
         ResetGameState(game);
 
         InitSounds(game.sound, game.soundBuffer);
-        InitStartScreen(game.leaderboard, game.startScreen, game.font);
+        InitMainMenu(game);
+        InitLeaderboard(game);
         InitHUD(game.hud, game.font);
         InitPlayer(game.player, game.playerTexture);
 
@@ -50,20 +50,24 @@ namespace ApplesGame
         GameState gameState = GetCurrentGameState(game);
         switch (gameState)
         {
-        case GameState::Menu:
-            UpdateStartScreen(game.startScreen, game);
+        case GameState::MainMenu:
+        case GameState::Leaderboard:
+            break;
+        case GameState::Settings:
+            UpdateSettings(game);
+
             break;
         case GameState::GameOver:
             game.sound.playerDeath.play();
             /* Pause GAME LOOP */
             std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_BEFORE_RESTART_IN_SECONDS));
-            UpdatePlayerPosition(game.playerScore, game.player.name, game.leaderboard);
+            UpdatePlayerPosition(game.player.score, game.player.name, game.leaderboard);
             RestartGame(game);
+
             break;
         case GameState::Playing:
             /* Set player direction */
             KeyboardHandler(game.player.direction);
-
             UpdatePlayerMovement(game.player, time);
 
             if (HasPlayerCollisionWithWindowBorder(game.player.position))
@@ -82,7 +86,7 @@ namespace ApplesGame
                     game.sound.appleEat.play();
 
                     /* Count eated apples */
-                    ++game.playerScore;
+                    ++game.player.score;
 
                     if (IsEnableGameMode(game.mode, GameModeSettingsBitMask::IsInfinite))
                     {
@@ -115,6 +119,7 @@ namespace ApplesGame
                 }
             }
 
+            break;
         default:
             break;
         }
@@ -125,10 +130,25 @@ namespace ApplesGame
     void DrawGame(sf::RenderWindow& window, Game& game)
     {
         GameState gameState = GetCurrentGameState(game);
+
         switch (gameState)
         {
-        case GameState::Menu:
-            DrawStartScreen(game.startScreen, window);
+        case GameState::MainMenu:
+            DrawMainMenu(window, game.mainMenuScreen);
+
+            break;
+        case GameState::Leaderboard:
+            DrawLeaderboard(window, game.mainMenuScreen);
+
+            break;
+        case GameState::Settings:
+            if (game.mainMenuScreen.modeSettingsTitle.getString().isEmpty())
+            {
+                InitSettings(game);
+            }
+
+            DrawSettings(window, game.mainMenuScreen);
+
             break;
         case GameState::Playing:
             DrawPlayer(game.player, window);
@@ -144,9 +164,11 @@ namespace ApplesGame
             }
 
             DrawHUD(game.hud, window);
+
             break;
         case GameState::GameOver:
             DrawGameOver(game.hud, window);
+
             break;
         default:
             break;
@@ -206,7 +228,7 @@ namespace ApplesGame
     void ResetGameState(Game& game)
     {
         game.gameStateStack.clear();
-        PushGameState(game, GameState::Menu);
+        PushGameState(game, GameState::MainMenu);
     }
 
     void PushGameState(Game& game, GameState state)
@@ -216,7 +238,7 @@ namespace ApplesGame
 
     void PopGameState(Game& game)
     {
-        if (!game.gameStateStack.empty())
+        if (game.gameStateStack.size() != 1)
         {
             game.gameStateStack.pop_back();
         }
@@ -228,6 +250,6 @@ namespace ApplesGame
         {
             return game.gameStateStack.back();
         }
-        return GameState::Menu;
+        return GameState::MainMenu;
     }
 }

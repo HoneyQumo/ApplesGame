@@ -39,19 +39,34 @@ int main()
 
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
             {
-                if (GetCurrentGameState(game) == GameState::Menu)
+                if (GetCurrentGameState(game) == GameState::MainMenu)
                 {
                     window.close();
                     break;
                 }
 
-                RestartGame(game);
+                if (GetCurrentGameState(game) == GameState::Playing)
+                {
+                    RestartGame(game);
+                }
             }
 
-            /* Start Screen */
-            if (GetCurrentGameState(game) == GameState::Menu)
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Backspace)
             {
-                StartScreenKeyboardHandler(event, game);
+                if (GetCurrentGameState(game) != GameState::Playing)
+                {
+                    PopGameState(game);
+                }
+            }
+
+            /* MainMenu */
+            if (GetCurrentGameState(game) == GameState::MainMenu)
+            {
+                MainMenuKeyboardHandler(window, event, game);
+            }
+            else if (GetCurrentGameState(game) == GameState::Settings)
+            {
+                SettingsKeyboardHandler(event, game);
             }
         }
 
