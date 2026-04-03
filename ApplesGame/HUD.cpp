@@ -25,7 +25,7 @@ namespace ApplesGame
         hud.wasdHint.setPosition(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT - SCREEN_PADDING);
         hud.wasdHint.setOrigin(GetTextOrigin(hud.wasdHint, {0.5f, 1.f}));
 
-        hud.escapeHint.setString("Menu [ESC]");
+        hud.escapeHint.setString("Pause [ESC/P]");
         hud.escapeHint.setFont(font);
         hud.escapeHint.setCharacterSize(16);
         hud.escapeHint.setFillColor(whiteSemiTransparent);
@@ -47,7 +47,7 @@ namespace ApplesGame
         hud.speed.setString("Speed: " + std::to_string(static_cast<int>(game.player.speed)));
     }
 
-    void DrawHUD(const HUD& hud, sf::RenderWindow& window)
+    void DrawHUD(sf::RenderWindow& window, const HUD& hud)
     {
         window.draw(hud.score);
         window.draw(hud.speed);
@@ -55,8 +55,107 @@ namespace ApplesGame
         window.draw(hud.escapeHint);
     }
 
-    void DrawGameOver(const HUD& hud, sf::RenderWindow& window)
+    void DrawGameOver(sf::RenderWindow& window, const HUD& hud)
     {
         window.draw(hud.gameOver);
+    }
+
+    void InitPause(HUD& hud, const sf::Font& font)
+    {
+        hud.pauseSelectedOptionKey = PauseOptionKey::Continue;
+
+        hud.pauseTitle.setString("Pause");
+        hud.pauseTitle.setFont(font);
+        hud.pauseTitle.setCharacterSize(36);
+        hud.pauseTitle.setFillColor(sf::Color::White);
+        hud.pauseTitle.setPosition(SCREEN_WIDTH / 2.f, OFFSET_TOP_WINDOW_10_PERCENT);
+        hud.pauseTitle.setOrigin(GetTextOrigin(hud.pauseTitle, {0.5f, 1.f}));
+
+        hud.pauseToggleOptionHint.setString("Toggle [Arrow Up/Down]");
+        hud.pauseToggleOptionHint.setFont(font);
+        hud.pauseToggleOptionHint.setCharacterSize(16);
+        hud.pauseToggleOptionHint.setFillColor(sf::Color::White);
+        hud.pauseToggleOptionHint.setPosition(SCREEN_WIDTH - SCREEN_PADDING, SCREEN_PADDING);
+        hud.pauseToggleOptionHint.setOrigin(GetTextOrigin(hud.pauseToggleOptionHint, {1.f, 0.f}));
+
+        hud.pauseSelectHint.setString("Select [Enter]");
+        hud.pauseSelectHint.setFont(font);
+        hud.pauseSelectHint.setCharacterSize(16);
+        hud.pauseSelectHint.setFillColor(sf::Color::White);
+        hud.pauseSelectHint.setPosition(SCREEN_WIDTH - SCREEN_PADDING, SCREEN_PADDING + 30.f);
+        hud.pauseSelectHint.setOrigin(GetTextOrigin(hud.pauseSelectHint, {1.f, 0.f}));
+
+        int index = 0;
+        for (auto& option : hud.pauseOptions)
+        {
+            option.second.textNode.setString(option.second.title);
+            option.second.textNode.setFont(font);
+            option.second.textNode.setCharacterSize(20);
+            option.second.textNode.setFillColor(hud.pauseSelectedOptionKey == option.first ? sf::Color::Green : sf::Color::White);
+            option.second.textNode.setPosition(SCREEN_WIDTH / 2.f, OFFSET_TOP_WINDOW_20_PERCENT + (index * 30.f));
+            option.second.textNode.setOrigin(GetTextOrigin(option.second.textNode, {0.5f, 0.5f}));
+
+            index++;
+        }
+    }
+
+    void DrawPause(sf::RenderWindow& window, const HUD& hud)
+    {
+        window.draw(hud.pauseTitle);
+        window.draw(hud.pauseToggleOptionHint);
+        window.draw(hud.pauseSelectHint);
+
+        for (auto& option : hud.pauseOptions)
+        {
+            window.draw(option.second.textNode);
+        }
+    }
+
+    void PauseKeyboardHandler(sf::RenderWindow& window, const sf::Event& event, Game& game)
+    {
+        if (event.type == sf::Event::KeyPressed)
+        {
+            if (event.key.code == sf::Keyboard::Enter)
+            {
+                PauseOptionSelectHandler(window, game);
+            }
+            else if (event.key.code == sf::Keyboard::Up)
+            {
+                MenuToggleOption(game.hud.pauseOptions, game.hud.pauseSelectedOptionKey, MenuDirectionMovement::Up);
+            }
+            else if (event.key.code == sf::Keyboard::Down)
+            {
+                MenuToggleOption(game.hud.pauseOptions, game.hud.pauseSelectedOptionKey, MenuDirectionMovement::Down);
+            }
+        }
+    }
+
+    void PauseOptionSelectHandler(sf::RenderWindow& window, Game& game)
+    {
+        switch (game.hud.pauseSelectedOptionKey)
+        {
+        case PauseOptionKey::Continue:
+            PopGameState(game);
+            break;
+        case PauseOptionKey::ExitToMenu:
+            RestartGame(game);
+            break;
+        default:
+            break;
+        }
+    }
+
+    void SetPauseOptionKey(HUD& hud, const PauseOptionKey& newKey)
+    {
+        if (hud.pauseOptions.empty()) return;
+
+        const auto it = hud.pauseOptions.find(newKey);
+        if (it == hud.pauseOptions.end()) return;
+
+        hud.pauseSelectedOptionKey = newKey;
+        for (auto& option : hud.pauseOptions)
+        {
+            option.second.textNode.setFillColor(option.first == newKey ? sf::Color::Green : sf::Color::White);
+        }
     }
 }

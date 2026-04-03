@@ -7,12 +7,6 @@
 
 namespace ApplesGame
 {
-    enum class ToggleMenuDirection
-    {
-        Up = 0,
-        Down,
-    };
-
     enum class MainMenuOptionKey
     {
         StartGame = 0,
@@ -21,27 +15,25 @@ namespace ApplesGame
         Exit
     };
 
-    struct MainMenuOption
-    {
-        std::string title;
-        sf::Text textNode;
-    };
-
     struct MainMenu
     {
-        std::map<MainMenuOptionKey, MainMenuOption> options = {
+        std::map<MainMenuOptionKey, MenuOption> options = {
             {MainMenuOptionKey::StartGame, {"Start Game", {}}},
             {MainMenuOptionKey::Leaderboard, {"Leaderboard", {}}},
             {MainMenuOptionKey::Settings, {"Settings", {}}},
             {MainMenuOptionKey::Exit, {"Exit", {}}},
         };
 
-        MainMenuOptionKey selectedOptionKey;
+        MainMenuOptionKey selectedOptionKey = MainMenuOptionKey::StartGame;
 
 
         sf::Text title;
+        
+        /* Todo: Переделать подсказки клавиш на список */
         sf::Text hintExit;
         sf::Text hintReturnBack;
+        sf::Text toggleOptionHint;
+        sf::Text selectHint;
 
         sf::Text modeSettingsTitle;
         sf::Text isInfiniteMode;
@@ -65,6 +57,5 @@ namespace ApplesGame
     void SettingsKeyboardHandler(const sf::Event& event, Game& game);
 
     void MainMenuKeyboardHandler(sf::RenderWindow& window, const sf::Event& event, Game& game);
-    void MainMenuToggleOption(std::map<MainMenuOptionKey, MainMenuOption>& options, MainMenuOptionKey& selectedOptionKey, ToggleMenuDirection direction);
     void MainMenuOptionSelectHandler(sf::RenderWindow& window, Game& game);
 }

@@ -5,7 +5,6 @@ namespace ApplesGame
     void InitMainMenu(Game& game)
     {
         MainMenu& mainMenu = game.mainMenuScreen;
-        mainMenu.selectedOptionKey = MainMenuOptionKey::StartGame;
 
         mainMenu.title.setString("MAIN MENU");
         mainMenu.title.setFont(game.font);
@@ -41,12 +40,28 @@ namespace ApplesGame
         mainMenu.hintReturnBack.setFillColor(sf::Color::White);
         mainMenu.hintReturnBack.setPosition(SCREEN_WIDTH - SCREEN_PADDING, SCREEN_PADDING);
         mainMenu.hintReturnBack.setOrigin(GetTextOrigin(mainMenu.hintReturnBack, {1.f, 0.f}));
+
+        mainMenu.toggleOptionHint.setString("Toggle [Arrow Up/Down]");
+        mainMenu.toggleOptionHint.setFont(game.font);
+        mainMenu.toggleOptionHint.setCharacterSize(16);
+        mainMenu.toggleOptionHint.setFillColor(sf::Color::White);
+        mainMenu.toggleOptionHint.setPosition(SCREEN_WIDTH - SCREEN_PADDING, SCREEN_PADDING + 30.f);
+        mainMenu.toggleOptionHint.setOrigin(GetTextOrigin(mainMenu.toggleOptionHint, {1.f, 0.f}));
+
+        mainMenu.selectHint.setString("Select [Enter]");
+        mainMenu.selectHint.setFont(game.font);
+        mainMenu.selectHint.setCharacterSize(16);
+        mainMenu.selectHint.setFillColor(sf::Color::White);
+        mainMenu.selectHint.setPosition(SCREEN_WIDTH - SCREEN_PADDING, SCREEN_PADDING + 60.f);
+        mainMenu.selectHint.setOrigin(GetTextOrigin(mainMenu.selectHint, {1.f, 0.f}));
     }
 
     void DrawMainMenu(sf::RenderWindow& window, const MainMenu& mainMenu)
     {
         window.draw(mainMenu.title);
         window.draw(mainMenu.hintExit);
+        window.draw(mainMenu.toggleOptionHint);
+        window.draw(mainMenu.selectHint);
 
         for (const auto& option : mainMenu.options)
         {
@@ -189,54 +204,13 @@ namespace ApplesGame
             }
             else if (event.key.code == sf::Keyboard::Up)
             {
-                MainMenuToggleOption(game.mainMenuScreen.options, game.mainMenuScreen.selectedOptionKey, ToggleMenuDirection::Up);
+                MenuToggleOption(game.mainMenuScreen.options, game.mainMenuScreen.selectedOptionKey, MenuDirectionMovement::Up);
             }
             else if (event.key.code == sf::Keyboard::Down)
             {
-                MainMenuToggleOption(game.mainMenuScreen.options, game.mainMenuScreen.selectedOptionKey, ToggleMenuDirection::Down);
+                MenuToggleOption(game.mainMenuScreen.options, game.mainMenuScreen.selectedOptionKey, MenuDirectionMovement::Down);
             }
         }
-    }
-
-    void MainMenuToggleOption(std::map<MainMenuOptionKey, MainMenuOption>& options, MainMenuOptionKey& selectedOptionKey, ToggleMenuDirection direction)
-    {
-        if (options.empty()) return;
-
-        const auto it = options.find(selectedOptionKey);
-        if (it == options.end()) return;
-
-        if (direction == ToggleMenuDirection::Up)
-        {
-            if (it == options.begin())
-            {
-                auto prevIt = std::prev(options.end());
-                selectedOptionKey = prevIt->first;
-                prevIt->second.textNode.setFillColor(sf::Color::Green);
-            }
-            else
-            {
-                auto prevIt = std::prev(it);
-                selectedOptionKey = prevIt->first;
-                prevIt->second.textNode.setFillColor(sf::Color::Green);
-            }
-        }
-        else if (direction == ToggleMenuDirection::Down)
-        {
-            const auto nextIt = std::next(it);
-            if (nextIt == options.end())
-            {
-                auto nextIt = options.begin();
-                selectedOptionKey = nextIt->first;
-                nextIt->second.textNode.setFillColor(sf::Color::Green);
-            }
-            else
-            {
-                selectedOptionKey = nextIt->first;
-                nextIt->second.textNode.setFillColor(sf::Color::Green);
-            }
-        }
-
-        it->second.textNode.setFillColor(sf::Color::White);
     }
 
     void MainMenuOptionSelectHandler(sf::RenderWindow& window, Game& game)

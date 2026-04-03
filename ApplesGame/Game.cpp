@@ -57,14 +57,6 @@ namespace ApplesGame
             UpdateSettings(game);
 
             break;
-        case GameState::GameOver:
-            game.sound.playerDeath.play();
-            /* Pause GAME LOOP */
-            std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_BEFORE_RESTART_IN_SECONDS));
-            UpdatePlayerPosition(game.player.score, game.player.name, game.leaderboard);
-            RestartGame(game);
-
-            break;
         case GameState::Playing:
             /* Set player direction */
             KeyboardHandler(game.player.direction);
@@ -120,6 +112,16 @@ namespace ApplesGame
             }
 
             break;
+        case GameState::Pause:
+            break;
+        case GameState::GameOver:
+            game.sound.playerDeath.play();
+            /* Pause GAME LOOP */
+            std::this_thread::sleep_for(std::chrono::seconds(TIMEOUT_BEFORE_RESTART_IN_SECONDS));
+            UpdatePlayerPosition(game.player.score, game.player.name, game.leaderboard);
+            RestartGame(game);
+
+            break;
         default:
             break;
         }
@@ -163,11 +165,20 @@ namespace ApplesGame
                 DrawRock(rock, window);
             }
 
-            DrawHUD(game.hud, window);
+            DrawHUD(window, game.hud);
+
+            break;
+        case GameState::Pause:
+            if (game.hud.pauseTitle.getString().isEmpty())
+            {
+                InitPause(game.hud, game.font);
+            }
+
+            DrawPause(window, game.hud);
 
             break;
         case GameState::GameOver:
-            DrawGameOver(game.hud, window);
+            DrawGameOver(window, game.hud);
 
             break;
         default:
@@ -227,8 +238,7 @@ namespace ApplesGame
 
     void ResetGameState(Game& game)
     {
-        game.gameStateStack.clear();
-        PushGameState(game, GameState::MainMenu);
+        SwitchGameState(game, GameState::MainMenu);
     }
 
     void PushGameState(Game& game, GameState state)
@@ -242,6 +252,12 @@ namespace ApplesGame
         {
             game.gameStateStack.pop_back();
         }
+    }
+
+    void SwitchGameState(Game& game, GameState state)
+    {
+        game.gameStateStack.clear();
+        PushGameState(game, state);
     }
 
     GameState GetCurrentGameState(const Game& game)
