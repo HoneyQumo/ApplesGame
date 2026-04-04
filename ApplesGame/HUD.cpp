@@ -6,7 +6,6 @@ namespace ApplesGame
     {
         const sf::Color whiteSemiTransparent(255, 255, 255, 100);
 
-        /* Todo: Вынести в Shared.h функцию создания текста */
         hud.score.setString("Score: ");
         hud.score.setFont(font);
         hud.score.setCharacterSize(24);
